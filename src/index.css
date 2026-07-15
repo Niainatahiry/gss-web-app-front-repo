@@ -1,1 +1,156 @@
 @import "tailwindcss";
+
+@theme {
+
+  --font-display: 'BDO Grotesk', sans-serif;
+  --font-body:    'Cooper Hewitt', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  /* ── Color Variables ── */
+  /* Primary: Main brand color (buttons, links, active states) */
+  --color-primary:         #0B0A1A;
+  --color-primary-100:   #DFDEEB;
+  --color-primary-200:    #B7B5D2;
+  --color-primary-300:   #908DB9;
+  --color-primary-400:   #6B679E;
+  --color-primary-500:   #48457C;
+  --color-primary-600:   #29274A;
+  --color-primary-700:   #0B0A1A;
+
+
+  /* Secondary: Accent color (badges, highlights, secondary actions) */
+  --color-secondary: #D9D80F;
+  --color-secondary-100: #F9F813;
+  --color-secondary-200:  #D9D80F;
+  --color-secondary-300: #B0B00A;
+  --color-secondary-400: #8A8906;
+  --color-secondary-500: #656403;
+  --color-secondary-600: #424201;
+  --color-secondary-700: #222200;
+
+  /* Tertiary: Neutral/supporting color (backgrounds, borders, subtle elements) */
+  --color-tertiary: #0FD9D8;
+  --color-tertiary-100: #82FFFE;
+  --color-tertiary-200:  #0FD9D8;
+  --color-tertiary-300: #0AAEAE;
+  --color-tertiary-400: #058685;
+  --color-tertiary-500: #035F5E;
+  --color-tertiary-600: #013B3B;
+  --color-tertiary-700: #001A1A;
+}
+
+/* ── BDO Grotesk ── */
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-Regular-BF648a656fd543a.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-Medium-BF648a656fc86b8.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-DemiBold-BF648a656f9c460.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-Bold-BF648a656f8559f.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-ExtraBold-BF648a656f91fd9.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'BDO Grotesk';
+  src: url('/src/assets/fonts/bdo-grotesk-font-family/BDOGrotesk-Black-BF648a656f81fe9.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Cooper Hewitt ── */
+@font-face {
+  font-family: 'Cooper Hewitt';
+  src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cooper Hewitt';
+  src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Book.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cooper Hewitt';
+  src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cooper Hewitt';
+  src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cooper Hewitt';
+  src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Space Mono ── */
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/src/assets/fonts/Space_Mono/SpaceMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/src/assets/fonts/Space_Mono/SpaceMono-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/src/assets/fonts/Space_Mono/SpaceMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/src/assets/fonts/Space_Mono/SpaceMono-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── Default font stack for the whole app ── */
+body {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+}

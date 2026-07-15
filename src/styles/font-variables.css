@@ -1,0 +1,15 @@
+:root {
+  /* ── Font Family Variables ── */
+  --font-display: 'BDO Grotesk', sans-serif;
+  --font-body:    'Cooper Hewitt', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+
+  /* ── Font Weight Variables ── */
+  --font-weight-light:   300;
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:    700;
+  --font-weight-extrabold: 800;
+  --font-weight-black:   900;
+}

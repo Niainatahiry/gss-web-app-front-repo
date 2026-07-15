@@ -1,4 +1,4 @@
-import StatsCard from '../../components/admin/StatsCard';
+import StatsCard from './StatsCard';
 // import './Dashboard.css';
 
 function Dashboard() {
