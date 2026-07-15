@@ -2,8 +2,10 @@ import React from 'react'
 
 function Header() {
   return (
-    <div>Eto ny Header nos apetraka letsy dada cdzfefqsdqsdsdcsdca</div>   
-  )
+    <div>
+      tsara azoko fa mandeha indray
+    </div>
+    )
 }
 
 export default Header

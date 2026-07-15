@@ -1,0 +1,15 @@
+function Show-Tree {
+    param([string]$Path = ".", [string]$Indent = "")
+    $items = Get-ChildItem $Path -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne "node_modules" -and $_.Name -ne ".git" }
+    for ($i = 0; $i -lt $items.Count; $i++) {
+        $isLast = ($i -eq $items.Count - 1)
+        $branch = if ($isLast) { "└── " } else { "├── " }
+        "$Indent$branch$($items[$i].Name)" | Out-File structure.txt -Append
+        if ($items[$i].PSIsContainer) {
+            $newIndent = if ($isLast) { "$Indent    " } else { "$Indent│   " }
+            Show-Tree -Path $items[$i].FullName -Indent $newIndent
+        }
+    }
+}
+"$(Split-Path -Leaf (Get-Location))" | Out-File structure.txt
+Show-Tree
