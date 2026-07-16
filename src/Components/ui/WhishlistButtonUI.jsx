@@ -1,11 +1,10 @@
-import { BookmarkSimple } from '@phosphor-icons/react'
 import React from 'react'
+import { Bookmark } from 'lucide-react'
 
 function WishlistButtonUI() {
   return (
     <button className="bg-tertiary rounded-md p-2 cursor-pointer hover:bg-tertiary-300 transition-colors">
-      <BookmarkSimple size={16} weight="fill" className="text-primary-700" />
-      
+      <Bookmark size={18} className="text-primary-700" fill="currentColor" />
     </button>
   )
 }
