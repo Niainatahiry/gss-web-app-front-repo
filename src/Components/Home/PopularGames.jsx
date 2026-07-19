@@ -75,27 +75,23 @@ const popularGamesData = [
 const TIMER_DURATION = 5000
 
 function PopularGames() {
-   const [activeIndex, setActiveIndex] = useState(0)
-  const [timerProgress, setTimerProgress] = useState(0) // Start at 0, grow to 100
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [timerProgress, setTimerProgress] = useState(0)
   
   const activeGame = popularGamesData[activeIndex]
 
   useEffect(() => {
-    let progressInterval
-    let switchTimeout
+    const startTime = Date.now()
+    
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min((elapsed / TIMER_DURATION) * 100, 100)
+      setTimerProgress(progress)
+    }, 16) // ~60fps for smooth animation
 
-    // Progress increases from 0 to 100
-    progressInterval = setInterval(() => {
-      setTimerProgress(prev => {
-        const newProgress = prev + (50 / TIMER_DURATION) * 100
-        return Math.min(newProgress, 100)
-      })
-    }, 50)
-
-    // Switch when timer reaches 100%
-    switchTimeout = setTimeout(() => {
+    const switchTimeout = setTimeout(() => {
       setActiveIndex(prev => (prev + 1) % popularGamesData.length)
-      setTimerProgress(0) // Reset to 0 for next slide
+      setTimerProgress(0)
     }, TIMER_DURATION)
 
     return () => {
@@ -106,7 +102,7 @@ function PopularGames() {
 
   const handleGameClick = (index) => {
     setActiveIndex(index)
-    setTimerProgress(0) // Reset to 0 on manual click
+    setTimerProgress(0)
   }
 
   const itemCount = popularGamesData.length
