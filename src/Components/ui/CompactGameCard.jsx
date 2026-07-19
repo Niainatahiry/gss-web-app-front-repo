@@ -22,7 +22,7 @@ function CompactGameCard({
       }`}
     >
       {/* Thumbnail */}
-      <div className="h-full max-h-[72px] rounded overflow-hidden flex-shrink-0" style={{ aspectRatio: '2/3' }}>
+      <div className="h-full max-h-18 rounded overflow-hidden shrink-0" style={{ aspectRatio: '2/3' }}>
         <img
           src={portraitImage}
           alt={productName}
@@ -51,7 +51,7 @@ function CompactGameCard({
       {/* Arrow indicator */}
       <ChevronRight 
         size={16} 
-        className={`flex-shrink-0 transition-all ${isActive ? 'text-white opacity-100' : 'text-white/30 opacity-0'}`} 
+        className={`shrink-0 transition-all ${isActive ? 'text-white opacity-100' : 'text-white/30 opacity-0'}`} 
       />
 
       {/* Timer progress bar — grows left to right */}

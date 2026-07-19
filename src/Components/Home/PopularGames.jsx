@@ -131,14 +131,14 @@ function PopularGames() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
         
         {/* Left: Featured — uses landscapeImage */}
-        <div className="relative rounded-xl overflow-hidden group h-[520px]">
+        <div className="relative rounded-xl overflow-hidden group h-130">
           <img
             src={activeGame.landscapeImage}
             alt={activeGame.productName}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
           
           <FeaturedInfoCard
             gameLogo={activeGame.gameLogo}

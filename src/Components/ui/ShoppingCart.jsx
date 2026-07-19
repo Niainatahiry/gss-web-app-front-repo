@@ -17,7 +17,7 @@ export default function ShoppingCart() {
       </button>
 
       {/* Badge en bas à droite */}
-      <span className="absolute -right-2.5 -bottom-2.5 bg-red-500 text-white text-xs font-bold min-w-[22px] h-[22px] rounded-full flex items-center justify-center px-1 border-2 border-primary-600">
+      <span className="absolute -right-2.5 -bottom-2.5 bg-red-500 text-white text-xs font-bold min-w-5.5 h-5.5 rounded-full flex items-center justify-center px-1 border-2 border-primary-600">
         {itemCount}
       </span>
     </div>

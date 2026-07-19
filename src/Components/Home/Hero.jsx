@@ -195,7 +195,7 @@ const RESET_DELAY = 800
   const slide = slidesData[currentSlide % slidesData.length]
 
   return (
-    <section className="relative w-full h-[500px] md:h-[600px] lg:h-[700px]">
+    <section className="relative w-full h-125 md:h-150 lg:h-175">
       {/* Sliding Background — clipped */}
       <div className="absolute inset-0 overflow-hidden">
         <div 
@@ -210,14 +210,14 @@ const RESET_DELAY = 800
               key={`${s.id}-${i}`}
               src={s.imageUrl}
               alt={s.title}
-              className="w-full h-full object-cover flex-shrink-0"
+              className="w-full h-full object-cover shrink-0"
             />
           ))}
         </div>
       </div>
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/50 via-40% to-primary to-100%" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/50 via-40% to-primary to-100%" />
 
       {/* Content avec fade */}
       <div 

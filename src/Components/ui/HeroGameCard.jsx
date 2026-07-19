@@ -15,7 +15,7 @@ function HeroGameCard({
   return (
     <div className="w-54 flex flex-col start overflow-hidden cursor-pointer">
       {/* Game Image — Portrait */}
-      <div className="relative aspect-[2/3] rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+      <div className="relative aspect-2/3 rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
         <img 
           src={imageUrl} 
           alt={productName}
