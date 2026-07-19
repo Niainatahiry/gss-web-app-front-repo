@@ -1,21 +1,28 @@
 import React from 'react'
 import Hero from '../../components/home/Hero'
+import ProductCard from '../../components/ui/ProductCard'
+import BestSellers from '../../components/home/BestSellers'
+import Recommendations from '../../components/home/Recommendations'
+import PopularGames from '../../components/home/PopularGames'
 
 function HomePage() {
   return (
     <div>
       <Hero />
-      
-      {/* Section suivante — pt-64 laisse la place aux cards qui débordent */}
-      <section className="bg-primary pt-64 pb-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="font-display text-2xl font-bold text-primary-100">
-            Autres jeux
-          </h2>
-        </div>
+      <section className="pt-64 pb-12">
+        <PopularGames />
       </section>
+      {/* Section suivante — pt-64 laisse la place aux cards qui débordent */}
+      <section className="pb-12">
+        <BestSellers />
+      </section>
+      {/* Section suivante — pt-64 laisse la place aux cards qui débordent */}
+      <section className="pb-12">
+        <Recommendations />
+      </section>
+
     </div>
   )
 }
 
-export default Hero
+export default HomePage
