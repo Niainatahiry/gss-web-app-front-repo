@@ -82,7 +82,38 @@ const slidesData = [
       gameName: "ELDEN RING",
       description: "l'aventure la plus acclamée de FromSoftware. Un monde ouvert épique vous attend."
     }
+  },
+  {
+  id: 3,
+  imageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1808500/ab1991cd931978e06440673952afb6f802db383d/library_hero_2x.jpg",
+  title: "GSS exclusive sale on ARC Raiders",
+  subtitle: "NEW RELEASE SALE",
+  games: [
+    {
+      id: 7,
+      imageUrl: "https://store-images.s-microsoft.com/image/apps.1218.13550041517005289.7f3b0841-0084-4cae-88f4-8996d95d574f.96567331-f46b-4380-96a6-ab86b5c38634",
+      productName: "ARC RAIDERS STANDARD Edition",
+      originalPrice: 250000,
+      salePrice: 180000,
+      currency: "AR"
+    },
+    {
+      id: 8,
+      imageUrl: "https://store-images.s-microsoft.com/image/apps.27637.13724331513791367.30e3cd9a-beea-4797-8509-a950e1c1e48d.7f6d6861-aac4-4ec0-bcbf-42f8323c5bb0?",
+      productName: "ARC RAIDERS Founder Edition",
+      originalPrice: 320000,
+      salePrice: 235000,
+      currency: "AR"
+    },
+  ],
+  promotion: {
+    endDate: "31 Août 2026",
+    discount: "28",
+    maxSavings: "28",
+    gameName: "ARC RAIDERS",
+    description: "Le nouveau shooter d'extraction coopératif signé Embark Studios. Affrontez les ARC, récupérez du butin et survivez dans un monde post-apocalyptique."
   }
+}
 ]
 
 function Hero() {

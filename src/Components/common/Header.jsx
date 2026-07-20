@@ -21,7 +21,7 @@ function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-md border-b border-white/20 py-6">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl border-b border-white/20 py-6">
       <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Left side: Logo + Navigation */}
         <div className="flex items-center gap-6">
