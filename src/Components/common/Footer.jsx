@@ -3,7 +3,7 @@ import logoSrc from '../../assets/logos/gss-logo-light.png'
 
 function Footer() {
   return (
-<footer className="bg-primary-100/5 border-t ">
+<footer className="bg-primary-100/5 ">
   <div className="max-w-7xl mx-auto px-6 py-16">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
       

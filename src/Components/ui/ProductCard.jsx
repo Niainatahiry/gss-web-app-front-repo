@@ -23,7 +23,7 @@ function ProductCard({
 
       {/* Glassmorphism Description Panel */}
       <div className="absolute bottom-0 left-0 right-0">
-        <div className="backdrop-blur-md rounded-sm bg-white/10 border border-white/20 p-3 shadow-lg">
+        <div className="backdrop-blur-md rounded-b-sm bg-white/5 border border-white/20 p-3 shadow-lg">
           
           {/* Product Name — fixed height for 3 lines max */}
           <h3 
@@ -45,7 +45,7 @@ function ProductCard({
 
               {/* Prices */}
               <div className="flex flex-col">
-                <span className="text-white/50 text-[10px] line-through whitespace-nowrap">
+                <span className="text-white/50 text-xs line-through whitespace-nowrap">
                   {originalPrice.toLocaleString()}
                 </span>
                 <span className="text-white font-bold text-xs whitespace-nowrap">

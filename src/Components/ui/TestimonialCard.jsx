@@ -13,7 +13,7 @@ function TestimonialCard({ data }) {
   const remainingCount = genreList.length - maxTags
 
   return (
-    <div className="bg-primary-100/5 border rounded-xl p-6 w-95 shrink-0 font-body hover:border-primary-400 transition-all duration-300 flex flex-col h-136">
+    <div className="bg-primary-100/5 border border-transparent hover:border-primary-300 rounded-xl p-6 w-95 shrink-0 font-body hover:border-primary-400 transition-all duration-300 flex flex-col h-136">
 
       {/* First Section: Avatar + User Info + Stars */}
       <div className="flex items-center gap-4 mb-6">
@@ -48,7 +48,7 @@ function TestimonialCard({ data }) {
 
       {/* Second Section: Testimonial Text */}
       <div className="mb-6 grow">
-        <p className="text-primary-200 font-display text-2xl leading-relaxed italic line-clamp-5 overflow-hidden">
+        <p className="text-primary-100 font-display text-2xl leading-relaxed italic line-clamp-5 overflow-hidden">
           {testimonial}
         </p>
       </div>
@@ -64,7 +64,7 @@ function TestimonialCard({ data }) {
           {displayedGenres.map((g, index) => (
             <span 
               key={index}
-              className="text-xs font-semibold px-2.5 py-1 rounded-md bg-primary-600 text-primary-300 transition-colors cursor-default"
+              className="text-xs font-semibold px-2.5 py-1 rounded-sm bg-primary-600 text-white/50 transition-colors cursor-default"
             >
               {g}
             </span>
