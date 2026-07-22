@@ -39,10 +39,10 @@ function UserAvatar({
           <img
             src={avatarUrl}
             alt={username}
-            className="w-10 h-10 rounded-full object-cover border-2 border-primary-400"
+            className="w-12 h-12 rounded-full object-cover"
           />
         ) : (
-          <div className="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center border-2 border-primary-400">
+          <div className="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center ">
             <span className="font-display text-sm font-bold text-primary-100">
               {initials}
             </span>

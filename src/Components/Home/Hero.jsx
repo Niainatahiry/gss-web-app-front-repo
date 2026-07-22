@@ -254,7 +254,7 @@ const RESET_DELAY = 800
       <div 
         className={`relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}
       >
-        <div className="w-full max-w-6xl">
+        <div className="w-full max-w-7xl">
           <div className="mb-8">
             <h2 className="font-display text-xl md:text-4xl lg:text-3xl font-bold text-white drop-shadow-lg uppercase tracking-wide">
               {slide.title}
@@ -268,7 +268,7 @@ const RESET_DELAY = 800
 
       {/* Cards + Promotion avec fade */}
       <div 
-        className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-20 w-full max-w-6xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}
+        className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-20 w-full max-w-7xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}
       >
         <div className="grid grid-cols-[1fr_auto] gap-4">
           <div className="flex flex-wrap gap-4">

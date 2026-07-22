@@ -108,7 +108,7 @@ function PopularGames() {
   const itemCount = popularGamesData.length
 
   return (
-    <div className="max-w-6xl mx-auto py-12">
+    <div className="max-w-7xl mx-auto py-12">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-display text-2xl font-bold text-primary-100">

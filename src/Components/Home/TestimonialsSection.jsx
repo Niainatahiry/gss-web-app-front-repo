@@ -11,7 +11,7 @@ const testimonialsData = [
     gamePurchased: "Compte Steam Assassin's Creed IV: Black Flag Resynced",
     rating: 5,
     testimonial: "Je recommande, mahay mandray olona sady milamina tsara ny achat.",
-    gameName: "Assassin's Creed IV: Black Flag",
+    gameName: "Assassin's Creed IV: Black Flag Resynced",
     genre: ["Action", "Aventure", "Open World"],
     platform: "PC",
     launcher: "Steam"
@@ -52,18 +52,6 @@ const testimonialsData = [
     platform: "PC",
     launcher: "Steam"
   },
-  { 
-    id: 5,
-    username: "TestUser",
-    avatar: null,
-    gamePurchased: "Compte Steam The Witcher 3: Wild Hunt",
-    rating: 5,
-    testimonial: "Test avis avec beaucoup de tags pour vérifier le design quand les genres dépassent la limite.",
-    gameName: "The Witcher 3: Wild Hunt",
-    genre: ["RPG", "Action", "Aventure", "Open World", "Fantasy", "Narratif"],
-    platform: "PC",
-    launcher: "Steam"
-  }
 ]
 
 // ── Marquee Section ──

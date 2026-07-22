@@ -13,10 +13,10 @@ function TestimonialCard({ data }) {
   const remainingCount = genreList.length - maxTags
 
   return (
-    <div className="bg-primary-700 border border-primary-600 rounded-2xl p-6 w-95 shrink-0 font-body hover:border-primary-400 transition-all duration-300 h-full flex flex-col">
+    <div className="bg-primary-100/5 border rounded-xl p-6 w-95 shrink-0 font-body hover:border-primary-400 transition-all duration-300 flex flex-col h-136">
 
       {/* First Section: Avatar + User Info + Stars */}
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-4 mb-6">
         <UserAvatar 
           username={username} 
           avatarUrl={avatar} 
@@ -28,15 +28,15 @@ function TestimonialCard({ data }) {
           <span className="text-primary-100 font-display font-semibold text-sm">
             {username}
           </span>
-          <span className="text-primary-300 text-xs">
-            Purchased: {gamePurchased}
+          <span className="text-primary-300 text-xs  line-clamp-1">
+            purchased: {gamePurchased}
           </span>
           <StarRating count={rating} />
         </div>
       </div>
 
       {/* Separation: Quote Icon */}
-      <div className="mb-4">
+      <div className="mb-6">
         <svg 
           className="w-8 h-8 text-tertiary opacity-60" 
           fill="currentColor" 
@@ -48,13 +48,13 @@ function TestimonialCard({ data }) {
 
       {/* Second Section: Testimonial Text */}
       <div className="mb-6 grow">
-        <p className="text-primary-200 text-lg leading-relaxed italic line-clamp-5 h-[240px] overflow-hidden line-clamp-1">
-          "{testimonial}"
+        <p className="text-primary-200 font-display text-2xl leading-relaxed italic line-clamp-5 overflow-hidden">
+          {testimonial}
         </p>
       </div>
 
       {/* Third Section: Game Details */}
-      <div className="flex flex-col items-start gap-2 border-t border-primary-600 pt-4 mt-auto">
+      <div className="flex flex-col items-start justify-center gap-2 border-l-2 pl-6 border-primary-600 mt-auto">
         <span className="text-primary-100 font-display font-medium text-sm">
           {gameName}
         </span>
@@ -64,13 +64,13 @@ function TestimonialCard({ data }) {
           {displayedGenres.map((g, index) => (
             <span 
               key={index}
-              className="text-xs font-semibold px-2.5 py-1 rounded-md bg-primary-600 text-primary-400 transition-colors cursor-default"
+              className="text-xs font-semibold px-2.5 py-1 rounded-md bg-primary-600 text-primary-300 transition-colors cursor-default"
             >
               {g}
             </span>
           ))}
           {remainingCount > 0 && (
-            <span className="text-xs font-medium px-2 py-1 rounded-md bg-primary-600 text-primary-400 border border-primary-500">
+            <span className="text-xs font-medium px-2 py-1 rounded-md bg-primary-600 text-primary-300 border border-primary-500">
               +{remainingCount}
             </span>
           )}
