@@ -6,10 +6,13 @@ import HomePage from './pages/user/HomePage';
 import SearchPage from './pages/user/SearchPage';
 import ProductPage from './pages/user/ProductPage';
 import CartPage from './pages/user/CartPage';
+import DebugOverlay from './components/debug/DebugOverlay';
 
 function App() {
   return (
     <BrowserRouter>
+        <DebugOverlay />
+
       <Routes>
         {/* User routes with shared layout */}
         <Route element={<UserLayout />}>

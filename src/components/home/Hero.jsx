@@ -118,60 +118,69 @@ const slidesData = [
 
 function Hero() {
   const AUTO_SLIDE_INTERVAL = 10800
-const TRANSITION_DURATION = 500
-const RESET_DELAY = 800    
+  const TRANSITION_DURATION = 500
+  const RESET_DELAY = 800
+  const FADE_DURATION = 300
+
+  const hasMultipleSlides = slidesData.length > 1
 
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [visibleSlide, setVisibleSlide] = useState(0)   // ← NEW: what the user actually sees
   const [isFading, setIsFading] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(true)
-  
+
   const currentSlideRef = useRef(0)
   const isResettingRef = useRef(false)
   const transitionTimerRef = useRef(null)
   const autoTimerRef = useRef(null)
 
-  // Keep ref in sync with state
   useEffect(() => {
     currentSlideRef.current = currentSlide
   }, [currentSlide])
 
-  // Create extended slides: [0, 1, ..., n-1, 0]
-  const extendedSlides = [...slidesData, slidesData[0]]
+  // Extended slides only when multiple
+  const extendedSlides = hasMultipleSlides
+    ? [...slidesData, slidesData[0]]
+    : slidesData
+
+  // ── NEW: Sync visible content after fade completes ──
+  useEffect(() => {
+    if (!isFading) {
+      setVisibleSlide(currentSlide % slidesData.length)
+    }
+  }, [isFading, currentSlide])
 
   const resetToSlide0 = useCallback(() => {
+    if (!hasMultipleSlides) return
     isResettingRef.current = true
     setIsTransitioning(false)
     setCurrentSlide(0)
     currentSlideRef.current = 0
 
-    // Re-enable transitions after reset
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setIsTransitioning(true)
         isResettingRef.current = false
       })
     })
-  }, [])
+  }, [hasMultipleSlides])
 
   const nextSlide = useCallback(() => {
-    if (isResettingRef.current) return
+    if (!hasMultipleSlides || isResettingRef.current) return
 
     const next = currentSlideRef.current + 1
     const totalRealSlides = slidesData.length
 
+    // Start fade-out → content stays old during fade
     setIsFading(true)
 
-    setTimeout(() => {
-      setIsFading(false)
-    }, 300)
+    setTimeout(() => setIsFading(false), FADE_DURATION)
 
     if (next === totalRealSlides) {
-      // Go to duplicate slide with transition
       setIsTransitioning(true)
       setCurrentSlide(next)
       currentSlideRef.current = next
 
-      // After transition, instantly reset to slide 0
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
       transitionTimerRef.current = setTimeout(() => {
         resetToSlide0()
@@ -181,19 +190,19 @@ const RESET_DELAY = 800
       setCurrentSlide(next)
       currentSlideRef.current = next
     }
-  }, [resetToSlide0])
+  }, [hasMultipleSlides, resetToSlide0])
 
   const prevSlide = useCallback(() => {
-    if (isResettingRef.current) return
+    if (!hasMultipleSlides || isResettingRef.current) return
 
     const prev = currentSlideRef.current - 1
     const totalRealSlides = slidesData.length
 
+    // Start fade-out → content stays old during fade
     setIsFading(true)
-    setTimeout(() => setIsFading(false), 300)
+    setTimeout(() => setIsFading(false), FADE_DURATION)
 
     if (currentSlideRef.current === 0) {
-      // Jump to duplicate without transition, then slide to real last
       isResettingRef.current = true
       setIsTransitioning(false)
       setCurrentSlide(totalRealSlides)
@@ -212,28 +221,35 @@ const RESET_DELAY = 800
       setCurrentSlide(prev)
       currentSlideRef.current = prev
     }
-  }, [])
+  }, [hasMultipleSlides])
 
   // Auto-timer
   useEffect(() => {
+    if (!hasMultipleSlides) return
+
     autoTimerRef.current = setInterval(nextSlide, AUTO_SLIDE_INTERVAL)
     return () => {
       clearInterval(autoTimerRef.current)
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
     }
-  }, [nextSlide])
+  }, [nextSlide, hasMultipleSlides])
 
-  const slide = slidesData[currentSlide % slidesData.length]
+  // ── KEY FIX: derive content from VISIBLE slide, not current slide ──
+  const slide = slidesData[visibleSlide]
 
   return (
     <section className="relative w-full h-125 md:h-150 lg:h-175">
-      {/* Sliding Background — clipped */}
+      {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 flex"
           style={{
-            transform: `translateX(-${currentSlide * 100}%)`,
-            transition: isTransitioning ? `transform ${TRANSITION_DURATION}ms ease-in-out` : 'none'
+            transform: hasMultipleSlides
+              ? `translateX(-${currentSlide * 100}%)`
+              : 'none',
+            transition: isTransitioning && hasMultipleSlides
+              ? `transform ${TRANSITION_DURATION}ms ease-in-out`
+              : 'none'
           }}
         >
           {extendedSlides.map((s, i) => (
@@ -247,55 +263,60 @@ const RESET_DELAY = 800
         </div>
       </div>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/50 via-40% to-primary to-100%" />
-
-      {/* Content avec fade */}
-      <div 
-        className={`relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}
+      {/* Content wrapper — fades out/in, but data is locked to visibleSlide */}
+      <div
+        className={`relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-opacity duration-300 ${
+          isFading ? 'opacity-0' : 'opacity-100'
+        }`}
       >
-        <div className="w-full max-w-7xl">
-          <div className="mb-8">
-            <h2 className="font-display text-xl md:text-4xl lg:text-3xl font-bold text-white drop-shadow-lg uppercase tracking-wide">
+        <div className="w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
+          <div className="mb-6 xl:mb-7 2xl:mb-8">
+            <h2 className="font-display text-lg md:text-lg 2xl:text-3xl font-bold text-white drop-shadow-xl uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
               {slide.title}
             </h2>
-            <p className="font-display text-5xl md:text-6xl lg:text-7xl font-black text-white drop-shadow-lg uppercase tracking-wider mt-2">
+            <p className="font-display text-3xl md:text-5xl 2xl:text-7xl font-black text-white drop-shadow-xl uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
               {slide.subtitle}
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Cards + Promotion avec fade */}
-      <div 
-        className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-20 w-full max-w-7xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}
-      >
-        <div className="grid grid-cols-[1fr_auto] gap-4">
-          <div className="flex flex-wrap gap-4">
-            {slide.games.map(game => (
-              <HeroGameCard key={game.id} {...game} />
-            ))}
-          </div>
-          <div className="self-stretch flex">
-            <PromotionDescription {...slide.promotion} />
+        <div
+          className={`absolute top-[70%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0 transition-opacity duration-300 ${
+            isFading ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full">
+            <div className="shrink-0 bg">
+              <PromotionDescription {...slide.promotion} />
+            </div>
+            <div className="flex flex-nowrap gap-4 flex-1 justify-end md:mx-auto ">
+              {slide.games.map(game => (
+                <HeroGameCard key={game.id} {...game} />
+              ))}
+            </div>
+
           </div>
         </div>
       </div>
 
-      {/* Arrows */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
-      >
-        <ChevronLeft size={24} className="text-primary-100" />
-      </button>
+      <div className="absolute top-1/2 inset-0 bg-linear-to-b from-transparent via-primary/50 via-40% to-primary to-100%" />
 
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
-      >
-        <ChevronRight size={24} className="text-primary-100" />
-      </button>
+      {hasMultipleSlides && (
+        <>
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
+          >
+            <ChevronLeft size={24} className="text-primary-100" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
+          >
+            <ChevronRight size={24} className="text-primary-100" />
+          </button>
+        </>
+      )}
     </section>
   )
 }
