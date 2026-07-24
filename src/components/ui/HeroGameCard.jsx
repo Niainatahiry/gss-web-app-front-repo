@@ -13,9 +13,9 @@ function HeroGameCard({
   currency = 'AR'
 }) {
   return (
-    <div className=" md:w-48 lg:w-40 xl:w-48 2xl:w-54 flex flex-col start overflow-hidden cursor-pointer">
+<div className="w-32 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 flex flex-col items-start overflow-hidden cursor-pointer">
       {/* Game Image — Portrait */}
-      <div className="relative aspect-2/3 rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+      <div className="relative w-full aspect-2/3 rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
         <img 
           src={imageUrl} 
           alt={productName}
@@ -24,17 +24,17 @@ function HeroGameCard({
       </div>
 
       {/* Product Info */}
-      <div className="pt-2 xl:pt-3 flex flex-col justify-items-start gap-1">
+      <div className="pt-2 sm:pt-2 xl:pt-3 flex flex-col justify-items-start gap-1">
         {/* Product Name */}
-        <h3 className="font-display text-[10px] xl:text-xs 2xl:text-xs font-bold text-primary-100 uppercase tracking-wide line-clamp-6">
+        <h3 className="font-display text-[10px] sm:text-xs xl:text-xs 2xl:text-xs font-bold text-primary-100 uppercase tracking-wide line-clamp-6">
           {productName}
         </h3>
 
-        <span className="font-body text-base xl:text-lg 2xl:text-xl font-bold text-primary-400 line-through tracking-tight">
+        <span className="font-body text-base sm:text-lg xl:text-lg 2xl:text-xl font-bold text-primary-400 line-through tracking-tight">
           {formatAriary(originalPrice)} AR
         </span>
 
-        <span className="font-body text-sm xl:text-base 2xl:text-lg font-bold text-green-400 tracking-tight">
+        <span className="font-body text-sm sm:text-base xl:text-base 2xl:text-lg font-bold text-green-400 tracking-tight">
           {formatAriary(salePrice)} AR
         </span>
       </div>

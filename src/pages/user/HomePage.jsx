@@ -8,16 +8,14 @@ import TestimonialsSection from '../../components/home/TestimonialsSection'
 
 function HomePage() {
   return (
-    <div>
+    <div >
       <Hero />
-      <section className="pt-64 pb-12">
+      <section className="sm:pt-88 md:pt-106 xl:pt-64 pt-64 pb-12">
         <PopularGames />
       </section>
-      {/* Section suivante — pt-64 laisse la place aux cards qui débordent */}
       <section className="pb-12">
         <BestSellers />
       </section>
-      {/* Section suivante — pt-64 laisse la place aux cards qui débordent */}
       <section className="pb-12">
         <Recommendations />
       </section>

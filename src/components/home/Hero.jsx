@@ -271,10 +271,10 @@ function Hero() {
       >
         <div className="w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
           <div className="mb-6 xl:mb-7 2xl:mb-8">
-            <h2 className="font-display text-lg md:text-lg 2xl:text-3xl font-bold text-white drop-shadow-xl uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
+            <h2 className="font-display text-lg text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-lg 2xl:text-3xl font-bold text-white drop-shadow-xl uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
               {slide.title}
             </h2>
-            <p className="font-display text-3xl md:text-5xl 2xl:text-7xl font-black text-white drop-shadow-xl uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
+            <p className="font-display text-3xl text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-5xl 2xl:text-7xl font-black text-white drop-shadow-xl uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
               {slide.subtitle}
             </p>
           </div>
@@ -285,11 +285,11 @@ function Hero() {
             isFading ? 'opacity-0' : 'opacity-100'
           }`}
         >
-          <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full">
+          <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full sm:w-full">
             <div className="shrink-0 bg">
               <PromotionDescription {...slide.promotion} />
             </div>
-            <div className="flex flex-nowrap gap-4 flex-1 justify-end md:mx-auto ">
+            <div className="flex flex-nowrap gap-4 flex-1 justify-center lg:justify-end">
               {slide.games.map(game => (
                 <HeroGameCard key={game.id} {...game} />
               ))}
