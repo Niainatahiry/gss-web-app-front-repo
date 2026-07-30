@@ -13,7 +13,7 @@ function HeroGameCard({
   currency = 'AR'
 }) {
   return (
-<div className="w-32 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 flex flex-col items-start overflow-hidden cursor-pointer">
+<div className="w-48 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 flex flex-col items-start overflow-hidden cursor-pointer">
       {/* Game Image — Portrait */}
       <div className="relative w-full aspect-2/3 rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
         <img 

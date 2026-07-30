@@ -10,7 +10,7 @@ function HomePage() {
   return (
     <div >
       <Hero />
-      <section className="sm:pt-88 md:pt-106 xl:pt-64 pt-64 pb-12">
+      <section className="pt-128 sm:pt-88 md:pt-106 xl:pt-64 pt-64 pb-12">
         <PopularGames />
       </section>
       <section className="pb-12">

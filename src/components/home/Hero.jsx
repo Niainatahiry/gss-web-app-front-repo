@@ -125,7 +125,7 @@ function Hero() {
   const hasMultipleSlides = slidesData.length > 1
 
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [visibleSlide, setVisibleSlide] = useState(0)   // ← NEW: what the user actually sees
+  const [visibleSlide, setVisibleSlide] = useState(0)
   const [isFading, setIsFading] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(true)
 
@@ -138,12 +138,10 @@ function Hero() {
     currentSlideRef.current = currentSlide
   }, [currentSlide])
 
-  // Extended slides only when multiple
   const extendedSlides = hasMultipleSlides
     ? [...slidesData, slidesData[0]]
     : slidesData
 
-  // ── NEW: Sync visible content after fade completes ──
   useEffect(() => {
     if (!isFading) {
       setVisibleSlide(currentSlide % slidesData.length)
@@ -171,7 +169,6 @@ function Hero() {
     const next = currentSlideRef.current + 1
     const totalRealSlides = slidesData.length
 
-    // Start fade-out → content stays old during fade
     setIsFading(true)
 
     setTimeout(() => setIsFading(false), FADE_DURATION)
@@ -198,7 +195,6 @@ function Hero() {
     const prev = currentSlideRef.current - 1
     const totalRealSlides = slidesData.length
 
-    // Start fade-out → content stays old during fade
     setIsFading(true)
     setTimeout(() => setIsFading(false), FADE_DURATION)
 
@@ -223,7 +219,6 @@ function Hero() {
     }
   }, [hasMultipleSlides])
 
-  // Auto-timer
   useEffect(() => {
     if (!hasMultipleSlides) return
 
@@ -234,7 +229,6 @@ function Hero() {
     }
   }, [nextSlide, hasMultipleSlides])
 
-  // ── KEY FIX: derive content from VISIBLE slide, not current slide ──
   const slide = slidesData[visibleSlide]
 
   return (
@@ -263,7 +257,7 @@ function Hero() {
         </div>
       </div>
 
-      {/* Content wrapper — fades out/in, but data is locked to visibleSlide */}
+      {/* Content wrapper */}
       <div
         className={`relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-opacity duration-300 ${
           isFading ? 'opacity-0' : 'opacity-100'
@@ -289,7 +283,9 @@ function Hero() {
             <div className="shrink-0 bg">
               <PromotionDescription {...slide.promotion} />
             </div>
-            <div className="flex flex-nowrap gap-4 flex-1 justify-center lg:justify-end">
+            
+            {/* Game cards — scrollable horizontally on small screens, no scrollbar */}
+            <div className="px-6 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-end overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {slide.games.map(game => (
                 <HeroGameCard key={game.id} {...game} />
               ))}
