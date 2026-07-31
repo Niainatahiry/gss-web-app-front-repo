@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { ArrowRight } from 'lucide-react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
@@ -76,13 +76,17 @@ const TIMER_DURATION = 5000
 function PopularGames() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [timerProgress, setTimerProgress] = useState(0)
+  const [userInitiated, setUserInitiated] = useState(false)
   const scrollContainerRef = useRef(null)
   const cardRefs = useRef([])
   
   const activeGame = popularGamesData[activeIndex]
 
-  // Desktop auto-rotation timer
+  // Desktop auto-rotation timer — ONLY on md+
   useEffect(() => {
+    const isDesktop = window.innerWidth >= 768
+    if (!isDesktop) return
+
     const startTime = Date.now()
     
     const progressInterval = setInterval(() => {
@@ -92,6 +96,7 @@ function PopularGames() {
     }, 16)
 
     const switchTimeout = setTimeout(() => {
+      setUserInitiated(false)
       setActiveIndex(prev => (prev + 1) % popularGamesData.length)
       setTimerProgress(0)
     }, TIMER_DURATION)
@@ -102,8 +107,10 @@ function PopularGames() {
     }
   }, [activeIndex])
 
-  // Auto-scroll to active card when activeIndex changes (mobile only)
+  // Auto-scroll ONLY when user clicked (not timer)
   useEffect(() => {
+    if (!userInitiated) return
+    
     const card = cardRefs.current[activeIndex]
     const container = scrollContainerRef.current
     if (!card || !container) return
@@ -116,7 +123,7 @@ function PopularGames() {
       block: 'nearest',
       inline: 'center',
     })
-  }, [activeIndex])
+  }, [activeIndex, userInitiated])
 
   // Mobile scroll tracking — IntersectionObserver
   useEffect(() => {
@@ -128,6 +135,7 @@ function PopularGames() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const index = Number(entry.target.dataset.index)
+            setUserInitiated(false)
             setActiveIndex(index)
             setTimerProgress(0)
           }
@@ -146,26 +154,27 @@ function PopularGames() {
     return () => observer.disconnect()
   }, [])
 
-  const handleGameClick = (index) => {
+  const handleGameClick = useCallback((index) => {
+    setUserInitiated(true)
     setActiveIndex(index)
     setTimerProgress(0)
-  }
+  }, [])
 
   const itemCount = popularGamesData.length
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-bold text-primary-100">
+      <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+        <h2 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-primary-100">
           Populaires en ce moment
         </h2>
         <a 
           href="/popular" 
-          className="flex items-center gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
+          className="flex items-center gap-1 sm:gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
         >
-          <span className="text-sm font-medium">Voir tout</span>
-          <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+          <span className="text-xs sm:text-sm font-medium">Voir tout</span>
+          <ArrowRight size={14} className="sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-x-1" />
         </a>
       </div>
 
@@ -233,6 +242,7 @@ function PopularGames() {
               key={game.id}
               ref={(el) => { cardRefs.current[index] = el }}
               data-index={index}
+              onClick={() => handleGameClick(index)}
               className={`relative flex-shrink-0 w-[75vw] rounded-2xl overflow-hidden snap-center cursor-pointer transition-all duration-300 ${
                 index === activeIndex 
                   ? 'scale-100 opacity-100' 
@@ -281,14 +291,14 @@ function PopularGames() {
           ))}
         </div>
       </div>
-
-      {/* Mobile dots indicator */}
+      {/* Mobile dots indicator — clickable */}
       <div className="md:hidden flex justify-center gap-2 mt-4">
         {popularGamesData.map((_, index) => (
-          <div
+          <button
             key={index}
-            className={`h-2 rounded-full transition-all ${
-              index === activeIndex ? 'bg-white w-6' : 'bg-white/30 w-2'
+            onClick={() => handleGameClick(index)}
+            className={`h-2 rounded-full transition-all cursor-pointer ${
+              index === activeIndex ? 'bg-white w-6' : 'bg-white/30 w-2 hover:bg-white/50'
             }`}
           />
         ))}
