@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { ArrowRight } from 'lucide-react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
@@ -15,7 +15,7 @@ const popularGamesData = [
     salePrice: 210000,
     currency: "AR",
     launcherLogo: "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg",
-    description: "Vivez The World’s Game comme jamais auparavant dans EA SPORTS FC™ 26. Visez la gloire dans un mode tournoi international à 48 équipes, relevez des défis Manager Live thématiques et lancez-vous dans Carrière de pro avec de nouvelles ICÔNES et de nouveaux Héros internationaux. "
+    description: "Vivez The World's Game comme jamais auparavant dans EA SPORTS FC™ 26. Visez la gloire dans un mode tournoi international à 48 équipes, relevez des défis Manager Live thématiques et lancez-vous dans Carrière de pro avec de nouvelles ICÔNES et de nouveaux Héros internationaux. "
   },
   {
     id: 2,
@@ -48,7 +48,6 @@ const popularGamesData = [
     landscapeImage: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3472040/70b51b8393d7c948891d09471b2ce6e68b7b374e/library_hero_2x.jpg?t=1782486648",
     portraitImage: "https://store-images.s-microsoft.com/image/apps.23652.14220255605673269.167b0e48-1b10-4ff3-8231-dbaf3fa1ed77.12dd221d-1bda-49fa-8602-c6fb59ebf56f",
     gameLogo: "https://cdn2.steamgriddb.com/logo_thumb/c59c4da559d8dae958242f8a57f409cc.png",
-
     productName: "NBA 2K26",
     discount: 35,
     originalPrice: 250000,
@@ -77,9 +76,12 @@ const TIMER_DURATION = 5000
 function PopularGames() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [timerProgress, setTimerProgress] = useState(0)
+  const scrollContainerRef = useRef(null)
+  const cardRefs = useRef([])
   
   const activeGame = popularGamesData[activeIndex]
 
+  // Desktop auto-rotation timer
   useEffect(() => {
     const startTime = Date.now()
     
@@ -87,7 +89,7 @@ function PopularGames() {
       const elapsed = Date.now() - startTime
       const progress = Math.min((elapsed / TIMER_DURATION) * 100, 100)
       setTimerProgress(progress)
-    }, 16) // ~60fps for smooth animation
+    }, 16)
 
     const switchTimeout = setTimeout(() => {
       setActiveIndex(prev => (prev + 1) % popularGamesData.length)
@@ -100,6 +102,50 @@ function PopularGames() {
     }
   }, [activeIndex])
 
+  // Auto-scroll to active card when activeIndex changes (mobile only)
+  useEffect(() => {
+    const card = cardRefs.current[activeIndex]
+    const container = scrollContainerRef.current
+    if (!card || !container) return
+
+    const isMobile = window.innerWidth < 768
+    if (!isMobile) return
+
+    card.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center',
+    })
+  }, [activeIndex])
+
+  // Mobile scroll tracking — IntersectionObserver
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.dataset.index)
+            setActiveIndex(index)
+            setTimerProgress(0)
+          }
+        })
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    )
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
   const handleGameClick = (index) => {
     setActiveIndex(index)
     setTimerProgress(0)
@@ -108,7 +154,7 @@ function PopularGames() {
   const itemCount = popularGamesData.length
 
   return (
-    <div className="max-w-7xl mx-auto py-12">
+    <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-display text-2xl font-bold text-primary-100">
@@ -123,11 +169,11 @@ function PopularGames() {
         </a>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
+      {/* md+ : Two-column grid with Featured + Sidebar */}
+      <div className="hidden md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_340px] gap-4">
         
-        {/* Left: Featured — uses landscapeImage */}
-        <div className="relative rounded-xl overflow-hidden group h-130">
+        {/* Left: Featured — h-full to match sidebar height */}
+        <div className="relative rounded-xl overflow-hidden group h-full">
           <img
             src={activeGame.landscapeImage}
             alt={activeGame.productName}
@@ -151,8 +197,8 @@ function PopularGames() {
           />
         </div>
 
-        {/* Right: List — passes portraitImage */}
-        <div className="grid gap-1" style={{ gridTemplateRows: `repeat(${itemCount}, 1fr)`, height: '520px' }}>
+        {/* Right: Sidebar — height drives the grid */}
+        <div className="grid gap-1" style={{ gridTemplateRows: `repeat(${itemCount}, 1fr)` }}>
           {popularGamesData.map((game, index) => (
             <CompactGameCard
               key={game.id}
@@ -168,7 +214,84 @@ function PopularGames() {
             />
           ))}
         </div>
+      </div>
 
+      {/* < md : Horizontal scrollable portrait cards */}
+      <div 
+        ref={scrollContainerRef}
+        className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 snap-x snap-mandatory"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <style>{`
+          .md\\:hidden::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+        <div className="flex gap-3 w-max">
+          {popularGamesData.map((game, index) => (
+            <div
+              key={game.id}
+              ref={(el) => { cardRefs.current[index] = el }}
+              data-index={index}
+              className={`relative flex-shrink-0 w-[75vw] rounded-2xl overflow-hidden snap-center cursor-pointer transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'scale-100 opacity-100' 
+                  : 'scale-95 opacity-60'
+              }`}
+              style={{ aspectRatio: '562/750' }}
+            >
+              <img
+                src={game.portraitImage}
+                alt={game.productName}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent" />
+              
+              {/* Content overlay */}
+              <div className="absolute bottom-4 left-4 right-4">
+                {game.gameLogo ? (
+                  <img 
+                    src={game.gameLogo} 
+                    alt={game.productName} 
+                    className="w-32 sm:w-40 mb-3 object-contain"
+                  />
+                ) : (
+                  <h3 className="text-white text-lg font-bold mb-2 leading-tight">
+                    {game.productName}
+                  </h3>
+                )}
+                
+                <p className="text-white/80 text-xs sm:text-sm mb-3 line-clamp-2">
+                  {game.description}
+                </p>
+                
+                <div className="flex items-center gap-2">
+                  <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                    -{game.discount}%
+                  </span>
+                  <span className="text-white/50 text-xs line-through">
+                    {game.originalPrice.toLocaleString()}
+                  </span>
+                  <span className="text-white text-sm font-bold">
+                    {game.salePrice.toLocaleString()} {game.currency}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile dots indicator */}
+      <div className="md:hidden flex justify-center gap-2 mt-4">
+        {popularGamesData.map((_, index) => (
+          <div
+            key={index}
+            className={`h-2 rounded-full transition-all ${
+              index === activeIndex ? 'bg-white w-6' : 'bg-white/30 w-2'
+            }`}
+          />
+        ))}
       </div>
     </div>
   )
