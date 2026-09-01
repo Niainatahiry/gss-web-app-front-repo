@@ -60,7 +60,7 @@ function TestimonialsSection() {
   const duplicatedData = [...testimonialsData, ...testimonialsData, ...testimonialsData]
 
   return (
-    <section className="w-full py-16 bg-primary overflow-hidden">
+    <section className="w-full py-10 sm:py-12 md:py-16 bg-primary overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
 
         {/* Section Header */}
