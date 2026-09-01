@@ -67,41 +67,49 @@ const recommendationsData = [
 
 function Recommendations() {
   return (
-    <div className="max-w-7xl mx-auto py-12">
-      {/* Section Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-bold text-primary-100">
-          Recommandés pour vous
-        </h2>
-        <a 
-          href="/recommendations" 
-          className="flex items-center gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
-        >
-          <span className="text-sm font-medium">Voir tout</span>
-          <ArrowRight 
-            size={18} 
-            className="transition-transform group-hover:translate-x-1" 
-          />
-        </a>
-      </div>
+    <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+  {/* Section Header */}
+  <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+    <h2 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-primary-100">
+      Recommandés pour vous
+    </h2>
+    <a 
+      href="/recommendations" 
+      className="flex items-center gap-1 sm:gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
+    >
+      <span className="text-xs sm:text-sm font-medium">Voir tout</span>
+      <ArrowRight 
+        size={14} 
+        className="sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-x-1" 
+      />
+    </a>
+  </div>
 
-      {/* Masonry Grid */}
-      <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4">
-        {recommendationsData.map((game) => (
-          <div key={game.id} className="break-inside-avoid mb-4">
-            <ProductCard
-              imageUrl={game.imageUrl}
-              productName={game.productName}
-              discount={game.discount}
-              originalPrice={game.originalPrice}
-              salePrice={game.salePrice}
-              currency={game.currency}
-              launcherLogo={game.launcherLogo}
-            />
-          </div>
-        ))}
+  {/* Scrollable on < xl — Masonry on xl+ */}
+  <div 
+    className="flex xl:block overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0 xl:columns-6 gap-4"
+    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+  >
+    <style>{`
+      .flex.overflow-x-auto::-webkit-scrollbar {
+        display: none;
+      }
+    `}</style>
+    {recommendationsData.map((game) => (
+      <div key={game.id} className="shrink-0 w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] xl:w-auto xl:break-inside-avoid xl:mb-4">
+        <ProductCard
+          imageUrl={game.imageUrl}
+          productName={game.productName}
+          discount={game.discount}
+          originalPrice={game.originalPrice}
+          salePrice={game.salePrice}
+          currency={game.currency}
+          launcherLogo={game.launcherLogo}
+        />
       </div>
-    </div>
+    ))}
+  </div>
+</div>
   )
 }
 

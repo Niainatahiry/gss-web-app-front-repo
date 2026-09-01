@@ -1,25 +1,19 @@
 import React from 'react'
-import { ShoppingCart as CartIcon } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 
-export default function ShoppingCart() {
+export default function ShoppingCartButton() {
   const cartTotal = 125000
   const itemCount = 3
 
   return (
-    <div className="relative inline-block">
-      <button className="flex items-center gap-2 bg-primary-600 rounded-lg px-2 py-2 cursor-pointer hover:bg-primary-500 transition-colors">
-        <span className="font-mono text-sm font-medium text-primary-100 px-1.5">
-          {cartTotal} AR
-        </span>
-        <div className="bg-secondary rounded-md p-2 flex items-center justify-center">
-          <CartIcon size={16} className="text-primary-700" fill="currentColor"/>
-        </div>
-      </button>
-
-      {/* Badge en bas à droite */}
-      <span className="absolute -right-2.5 -bottom-2.5 bg-red-500 text-white text-xs font-bold min-w-5.5 h-5.5 rounded-full flex items-center justify-center px-1 border-2 border-primary-600">
-        {itemCount}
-      </span>
-    </div>
+<button 
+  className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary-600 hover:bg-primary-500 text-primary-100 transition-all active:scale-95 cursor-pointer"
+  aria-label={`Panier, ${itemCount} articles`}
+>
+  <ShoppingCart size={18} strokeWidth={2} className="group-hover:text-white transition-colors" />
+  {itemCount > 0 && (
+    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-secondary ring-2 ring-primary-600" />
+  )}
+</button>
   )
 }

@@ -26,7 +26,7 @@ function Header() {
   }
 
   return (
-    <header className="fixed w-screen top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl border-b border-primary-100/10 py-6">
+    <header className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl border-b border-primary-100/10 py-6">
       <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Left side: Logo + Navigation */}
         <div className="flex items-center gap-6">
@@ -54,24 +54,22 @@ function Header() {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-3 font-body">
+        <div className="flex items-center gap-4 font-body">
           {/* Search — TOUJOURS visible */}
-          <div className="search-button-container">
-            <Search size={28} className="text-primary-100 cursor-pointer hover:text-secondary transition-colors" />
-          </div>
+          <button 
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-primary-100 hover:bg-primary-600 hover:text-secondary transition-all active:scale-95 cursor-pointer"
+            aria-label="Rechercher"
+          >
+            <Search size={18} strokeWidth={2} />
+          </button>
 
           {/* Utils — visibles UNIQUEMENT à partir de lg */}
-          <div className="hidden lg:flex items-center gap-3">
-            <div className='flex items-center px-8 gap-4'>         
-              <div className="shopping-cart">
-                <ShoppingCart />
-              </div>
-              <div className="wishlist-button-container">
-                <WishlistButtonUI />
-              </div>
-            </div>   
+          <div className="hidden lg:flex items-center gap-4">
+            <div className="shopping-cart">
+              <ShoppingCart />
+            </div>
             
-            <div className="user-avatar-container pl-4">
+            <div className="user-avatar-container">
               {isLoggedIn ? (
                 <div className="relative">
                   <button 
@@ -116,10 +114,10 @@ function Header() {
           {/* Hamburger — visible en dessous de lg */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden flex items-center justify-center p-2 rounded-lg text-primary-100 hover:bg-primary-600 transition-colors cursor-pointer"
+            className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg text-primary-100 hover:bg-primary-600 transition-colors cursor-pointer"
             aria-label="Ouvrir le menu"
           >
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMobileMenuOpen ? <X size={18} strokeWidth={2} /> : <Menu size={18} strokeWidth={2} />}
           </button>
         </div>
       </div>
@@ -142,9 +140,6 @@ function Header() {
               <div className="flex items-center gap-4">
                 <div className="shopping-cart">
                   <ShoppingCart />
-                </div>
-                <div className="wishlist-button-container">
-                  <WishlistButtonUI />
                 </div>
               </div>
             </div>

@@ -67,37 +67,43 @@ const bestSellersData = [
 
 function BestSellers() {
   return (
-    <div className="max-w-7xl mx-auto md:px-6 lg:px-0">
+    <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-bold text-primary-100">
+      <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+        <h2 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-primary-100">
           Meilleures ventes
         </h2>
         <a 
-          href="/best-sellers" 
-          className="flex items-center gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
+          href="/popular" 
+          className="flex items-center gap-1 sm:gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
         >
-          <span className="text-sm font-medium">Voir tout</span>
-          <ArrowRight 
-            size={18} 
-            className="transition-transform group-hover:translate-x-1" 
-          />
+          <span className="text-xs sm:text-sm font-medium">Voir tout</span>
+          <ArrowRight size={14} className="sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-x-1" />
         </a>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+      {/* Scrollable on < xl — Grid on xl+ */}
+      <div 
+        className="flex xl:grid xl:grid-cols-6 gap-4 overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <style>{`
+          .flex.overflow-x-auto::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
         {bestSellersData.map((game) => (
-          <ProductCard
-            key={game.id}
-            imageUrl={game.imageUrl}
-            productName={game.productName}
-            discount={game.discount}
-            originalPrice={game.originalPrice}
-            salePrice={game.salePrice}
-            currency={game.currency}
-            launcherLogo={game.launcherLogo}
-          />
+          <div key={game.id} className="shrink-0 w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] xl:w-auto">
+            <ProductCard
+              imageUrl={game.imageUrl}
+              productName={game.productName}
+              discount={game.discount}
+              originalPrice={game.originalPrice}
+              salePrice={game.salePrice}
+              currency={game.currency}
+              launcherLogo={game.launcherLogo}
+            />
+          </div>
         ))}
       </div>
     </div>
