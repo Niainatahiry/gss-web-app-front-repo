@@ -5,6 +5,7 @@ import BestSellers from '../../components/home/BestSellers'
 import Recommendations from '../../components/home/Recommendations'
 import PopularGames from '../../components/home/PopularGames'
 import TestimonialsSection from '../../components/home/TestimonialsSection'
+import SpecialPromo from '../../components/home/SpecialPromo'
 
 function HomePage() {
   return (
@@ -22,6 +23,9 @@ function HomePage() {
       <section className="pb-12">
         <TestimonialsSection />
       </section>
+        <section className="pb-12">
+          <SpecialPromo />
+        </section>
 
     </div>
   )
