@@ -1,5 +1,5 @@
 import React from 'react'
-import logoSrc from '../../assets/logos/gss-logo-light.png'
+import logoSrc from '../../assets/logos/gss-logo-no-border.png'
 
 function Footer() {
   return (
