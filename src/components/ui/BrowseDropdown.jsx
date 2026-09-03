@@ -83,7 +83,7 @@ function BrowseDropdown() {
         onClick={toggleOpen}
         onMouseEnter={() => setIsOpen(true)}
         className={`flex items-center gap-1 text-base font-medium text-primary-100 px-4 py-2 transition-colors rounded-lg cursor-pointer ${
-          isOpen ? 'bg-primary-600/70' : ''
+          isOpen ? '' : ''
         }`}
       >
         Parcourir
@@ -96,7 +96,7 @@ function BrowseDropdown() {
 
       {isOpen && (
         <div 
-          className="fixed left-0 right-0 top-32 bg-primary-700 border-b border-primary-100/10 shadow-2xl z-40"
+          className="fixed left-0 right-0 top-32 bg-[#201e3c] border-b border-primary-100/10 shadow-2xl z-40"
           onMouseEnter={() => setIsOpen(true)}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,7 +105,7 @@ function BrowseDropdown() {
               {/* Section 1: Plateformes (rank 1) */}
               {/* Section 1: Plateformes */}
 <div className="col-span-2 py-12">
-  <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider px-3 mb-5 font-display">
+  <h3 className="text-sm font-semibold text-white uppercase tracking-wider px-3 mb-5 font-display">
     Plateformes
   </h3>
   <ul className="space-y-1.5">
@@ -139,7 +139,7 @@ function BrowseDropdown() {
 
               {/* Section 2: En Vedette — Game Cards (rank 2) */}
                <div className="col-span-6 py-12">
-                <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider mb-5 font-display">
+                <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-5 font-display">
                   En Vedette
                 </h3>
                 <div className="grid grid-cols-4 gap-4">
@@ -159,11 +159,11 @@ function BrowseDropdown() {
               </div>
 
               {/* Section 3: Promo Banner (rank 3) */}
-              <div className="col-span-4">
-                <a
-                  href="#"
-                  className="group relative block w-full h-full overflow-hidden"
-                >
+                <div className="col-span-4 flex items-center">
+                  <a
+                    href="#"
+                    className="group relative block w-full aspect-[3/2] overflow-hidden rounded-lg"
+                  >
                   <img
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe8idNUp0SBN94Pb3bUp8UXka0OXdls9qk07YR2zcE-Zc53TtmU9GgLv4&s=10"
                     alt="Promotion"
