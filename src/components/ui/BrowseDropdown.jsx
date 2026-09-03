@@ -1,6 +1,9 @@
 // src/components/ui/BrowseDropdown.jsx
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Monitor } from 'lucide-react'
+import PlaystationLogo from '../../assets/logos/consoleLogos/playstation.svg?react'
+import XboxLogo from '../../assets/logos/consoleLogos/Xbox_Logo.svg?react'
+import NintendoLogo from '../../assets/logos/consoleLogos/Nintendo_Switch_Logo.svg?react'
 
 function BrowseDropdown() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,10 +22,10 @@ function BrowseDropdown() {
   const toggleOpen = () => setIsOpen(prev => !prev)
 
   const platforms = [
-    { name: 'PC', Icon: Monitor, isLucideIcon: true },
-    { name: 'PlayStation 5', logo: '/src/assets/logos/consoleLogos/playstation.svg' },
-    { name: 'Xbox Series X|S', logo: '/src/assets/logos/consoleLogos/Xbox_Logo.svg' },
-    { name: 'Nintendo Switch', logo: '/src/assets/logos/consoleLogos/Nintendo_Switch_Logo.svg' },
+    { name: 'PC', Icon: Monitor },
+    { name: 'PlayStation 5', Icon: PlaystationLogo },
+    { name: 'Xbox Series X|S', Icon: XboxLogo },
+    { name: 'Nintendo Switch', Icon: NintendoLogo },
   ]
 
   const featuredGames = [
@@ -55,50 +58,49 @@ function BrowseDropdown() {
 
       {isOpen && (
         <div 
-          className="fixed left-0 right-0 top-[88px] bg-primary-700/95 backdrop-blur-xl border-b border-primary-100/10 shadow-2xl z-40"
+          className="fixed left-0 right-0 top-22 bg-primary-700 border-b border-primary-100/10 shadow-2xl z-40"
           onMouseEnter={() => setIsOpen(true)}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-12 gap-8">
               
               {/* Section 1: Plateformes (rank 1) */}
-              <div className="col-span-2">
-                <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider mb-5 font-display">
-                  Plateformes
-                </h3>
-                <ul className="space-y-3">
-                  {platforms.map((platform) => (
-                    <li key={platform.name}>
-                      <a 
-                        href="#" 
-                        className="flex items-center gap-3 text-sm text-primary-100/80 hover:text-secondary transition-colors group"
-                      >
-                        {platform.isLucideIcon ? (
-                          <platform.Icon 
-                            size={18}
-                            className="opacity-60 group-hover:opacity-100 transition-opacity"
-                          />
-                        ) : (
-                          <img 
-                            src={platform.logo}
-                            alt={platform.name}
-                            className="h-5 w-5 opacity-60 group-hover:opacity-100 transition-all"
-                            style={{
-                              filter: 'brightness(0.8)',
-                            }}
-                            onMouseEnter={(e) => e.target.style.filter = 'brightness(0) saturate(100%) invert(79%) sepia(51%) saturate(497%) hue-rotate(2deg) brightness(104%)'}
-                            onMouseLeave={(e) => e.target.style.filter = 'brightness(0.8)'}
-                          />
-                        )}
-                        {platform.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* Section 1: Plateformes */}
+<div className="col-span-2 py-12">
+  <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider px-3 mb-5 font-display">
+    Plateformes
+  </h3>
+  <ul className="space-y-1.5">
+  {platforms.map((platform) => (
+    <li key={platform.name}>
+      <a
+        href="#"
+        className="
+          group
+          flex items-center gap-3
+          px-3 py-2
+          rounded-lg
+          text-sm
+          text-primary-100/70
+          hover:text-white
+          hover:bg-white/5
+          transition-all
+        "
+      >
+        <platform.Icon
+          className="w-5 h-5 opacity-50 group-hover:opacity-100 transition-opacity"
+          strokeWidth={2.5}
+        />
+
+        {platform.name}
+      </a>
+    </li>
+  ))}
+  </ul>
+</div>
 
               {/* Section 2: En Vedette — Game Cards (rank 2) */}
-              <div className="col-span-6">
+              <div className="col-span-6 py-12">
                 <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider mb-5 font-display">
                   En Vedette
                 </h3>
@@ -127,27 +129,24 @@ function BrowseDropdown() {
 
               {/* Section 3: Promo Banner (rank 3) */}
               <div className="col-span-4">
-                <h3 className="text-xs font-semibold text-secondary uppercase tracking-wider mb-5 font-display">
-                  Promotion
-                </h3>
-                <a 
+                <a
                   href="#"
-                  className="group block relative rounded-xl overflow-hidden h-full min-h-[280px]"
+                  className="group relative block w-full h-full overflow-hidden"
                 >
-                  <img 
-                    src="/src/assets/images/promo-banner.jpg" 
-                    alt="Promo"
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe8idNUp0SBN94Pb3bUp8UXka0OXdls9qk07YR2zcE-Zc53TtmU9GgLv4&s=10"
+                    alt="Promotion"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-700/90 via-primary-700/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <span className="inline-block px-3 py-1 bg-secondary text-primary-700 text-xs font-bold rounded-full mb-3">
-                      -50%
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <span className="inline-block bg-secondary text-primary-900 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded mb-2">
+                      Offre limitée
                     </span>
-                    <h4 className="text-xl font-bold text-primary-100 font-display mb-1">
-                      Soldes d'Été
+                    <h4 className="text-white text-lg font-bold leading-tight mb-1">
+                      Summer Sale 2026
                     </h4>
-                    <p className="text-sm text-primary-100/70">
+                    <p className="text-white/70 text-sm">
                       Jusqu'à -70% sur une sélection de jeux
                     </p>
                   </div>

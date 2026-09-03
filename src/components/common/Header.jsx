@@ -28,7 +28,7 @@ function Header() {
   ]
 
   return (
-    <header className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl border-b border-primary-100/10 py-6 lg:py-0">
+    <header className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl py-6 lg:py-0 hover:bg-primary-700 transition-colors duration-300">
       <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         
         {/* Left side: Hamburger (mobile only) + Logo */}

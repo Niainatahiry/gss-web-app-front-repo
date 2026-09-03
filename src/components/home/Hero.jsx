@@ -259,7 +259,7 @@ function Hero() {
 
       {/* Content wrapper */}
       <div
-        className={`relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-opacity duration-300 ${
+        className={`relative z-10 h-full flex flex-col items-center justify-center pb-36 px-4 sm:px-6 lg:px-8 transition-opacity duration-300 ${
           isFading ? 'opacity-0' : 'opacity-100'
         }`}
       >
@@ -275,7 +275,7 @@ function Hero() {
         </div>
 
         <div
-          className={`absolute top-[70%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0 transition-opacity duration-300 ${
+          className={`absolute top-[57%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0 transition-opacity duration-300 ${
             isFading ? 'opacity-0' : 'opacity-100'
           }`}
         >
@@ -295,7 +295,7 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute top-1/2 inset-0 bg-linear-to-b from-transparent via-primary/50 via-40% to-primary to-100%" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/50 via-50% to-primary to-100%" />
 
       {hasMultipleSlides && (
         <>
