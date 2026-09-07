@@ -64,37 +64,53 @@ function Header() {
 
     </div>
 
+{/* Search */}
+<div className="hidden lg:flex flex-1 justify-center px-12">
+  <div className="relative w-full max-w-2xl flex items-center">
 
-    {/* Search */}
-    <div className="hidden lg:flex flex-1 justify-center px-12">
-      <div className="relative w-full max-w-2xl">
+    {/* Search input — off-white/cream background */}
+    <input
+      type="text"
+      placeholder="Rechercher un jeu..."
+      className="
+        w-full
+        h-12
+        pl-5 pr-32
+        rounded-l-full
+        bg-[#f5f5f0]
+        border border-r-0 border-primary-100/10
+        text-primary-900
+        placeholder:text-primary-900/40
+        outline-none
+        transition-all
+        focus:bg-white
+        focus:border-primary-100/20
+      "
+    />
 
-        <Search
-          size={18}
-          strokeWidth={2}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-100/50 pointer-events-none"
-        />
+    {/* Search button — bg-secondary on the right */}
+    <button
+      type="submit"
+      className="
+        h-12
+        px-6
+        rounded-r-full
+        bg-secondary
+        hover:bg-secondary/90
+        text-primary-900
+        font-medium
+        flex items-center gap-2
+        transition-colors
+        shrink-0
+      "
+    >
+      <Search
+        size={18}
+        strokeWidth={2}
+      />
+    </button>
 
-        <input
-          type="text"
-          placeholder="Rechercher un jeu..."
-          className="
-            w-full
-            h-11
-            pl-11 pr-4
-            rounded-lg
-            bg-primary-600/40
-            border border-primary-100/10
-            text-primary-100
-            placeholder:text-primary-100/40
-            outline-none
-            transition-all
-            focus:bg-primary-600/70
-            focus:border-primary-100/20
-          "
-        />
-
-      </div>
+  </div>
     </div>
 
 

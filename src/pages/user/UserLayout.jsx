@@ -7,7 +7,6 @@ export default function UserLayout() {
     <>
       <Header />
       <Outlet />
-      <div className="py-64"></div>
       <Footer />
     </>
   );

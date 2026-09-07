@@ -25,8 +25,8 @@ function BrowseDropdown() {
 
   const platforms = [
     { name: 'PC', Icon: Monitor },
-    { name: 'PlayStation 5', Icon: PlaystationLogo },
-    { name: 'Xbox Series X|S', Icon: XboxLogo },
+    { name: 'PlayStation', Icon: PlaystationLogo },
+    { name: 'Xbox', Icon: XboxLogo },
     { name: 'Nintendo Switch', Icon: NintendoLogo },
   ]
 

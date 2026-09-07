@@ -6,13 +6,18 @@ import Recommendations from '../../components/home/Recommendations'
 import PopularGames from '../../components/home/PopularGames'
 import TestimonialsSection from '../../components/home/TestimonialsSection'
 import SpecialPromo from '../../components/home/SpecialPromo'
+import SelectPlatformsSection from '../../components/home/SelectPlatformsSection'
 
 function HomePage() {
   return (
     <div >
+      <section className="pb-128 sm:pb-88 md:pb-106 lg:pb-24 xl:pb-48">
       <Hero />
-      <section className="pt-128 sm:pt-88 md:pt-106 xl:pt-64 pt-64 pb-12">
+      </section>
+
+      <section className="pb-12">
         <PopularGames />
+
       </section>
       <section className="pb-12">
         <BestSellers />
@@ -25,6 +30,9 @@ function HomePage() {
       </section>
         <section className="pb-12">
           <SpecialPromo />
+        </section>
+        <section className="pb-12">
+          <SelectPlatformsSection  />
         </section>
 
     </div>
