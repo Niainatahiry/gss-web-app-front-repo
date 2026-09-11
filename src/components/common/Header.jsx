@@ -5,6 +5,7 @@ import ShoppingCart from '../ui/ShoppingCart'
 import UserAvatar from '../ui/UserAvatar'
 import { Search, Menu, X, User } from 'lucide-react'
 import BrowseDropdown from '../ui/BrowseDropdown'
+import { Link } from 'react-router-dom'
 
 function Header() {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false)
@@ -31,7 +32,7 @@ function Header() {
     <header className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl hover:bg-primary-700 transition-colors duration-300">
 
   {/* ==================== TOP ROW ==================== */}
-  <div className="w-full px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <div className="w-full px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
 
     {/* Logo */}
     <div className="flex items-center gap-4 shrink-0">
@@ -48,7 +49,7 @@ function Header() {
         }
       </button>
 
-      <div className="logo-container shrink-0">
+      <Link to="/" className="logo-container shrink-0">
         <img
           src={logoSrc}
           alt="GSS Logo"
@@ -60,13 +61,13 @@ function Header() {
           alt="GSS"
           className="h-7 w-auto sm:hidden"
         />
-      </div>
+      </Link>
 
     </div>
 
 {/* Search */}
 <div className="hidden lg:flex flex-1 justify-center px-12">
-  <div className="relative w-full max-w-2xl flex items-center">
+  <div className="relative w-full max-w-xl flex items-center">
 
     {/* Search input — off-white/cream background */}
     <input
@@ -74,7 +75,7 @@ function Header() {
       placeholder="Rechercher un jeu..."
       className="
         w-full
-        h-12
+        h-14
         pl-5 pr-32
         rounded-l-full
         bg-[#f5f5f0]
@@ -92,7 +93,7 @@ function Header() {
     <button
       type="submit"
       className="
-        h-12
+        h-14
         px-6
         rounded-r-full
         bg-secondary

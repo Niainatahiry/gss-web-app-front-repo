@@ -21,7 +21,6 @@ function TestimonialCard({ data }) {
           username={username} 
           avatarUrl={avatar} 
           showUsername={false}
-          showMenu={false}
         />
 
         <div className="flex flex-col">

@@ -3,7 +3,8 @@ import { User } from 'lucide-react'
 
 function UserAvatar({ 
   username = null, 
-  avatarUrl = null
+  avatarUrl = null,
+  showUsername = true
 }) {
   const getInitials = (name) => {
     if (!name) return '?'
@@ -15,7 +16,9 @@ function UserAvatar({
   const initials = getInitials(username)
 
   // Split firstname / lastname
-  const [firstName = '', lastName = ''] = username ? username.trim().split(' ') : []
+  const [firstName = '', lastName = ''] = username
+    ? username.trim().split(' ')
+    : []
 
   // Déconnecté → icône User minimaliste dans un cercle
   if (!username) {
@@ -26,18 +29,22 @@ function UserAvatar({
     )
   }
 
-  // Connecté → prénom/nom à gauche (desktop uniquement) + avatar
+  // Connecté → prénom/nom + avatar
   return (
     <div className="flex items-center gap-2.5">
-      {/* Texte — caché sur mobile */}
-      <div className="hidden sm:flex flex-col items-end leading-none">
-        <span className="font-display text-xs font-semibold text-primary-100">
-          {firstName}
-        </span>
-        <span className="font-display text-[10px] font-medium text-primary-300 mt-0.5">
-          {lastName}
-        </span>
-      </div>
+
+      {/* Nom — affiché seulement si showName = true */}
+      {showUsername && (
+        <div className="hidden sm:flex flex-col items-end leading-none">
+          <span className="font-display text-xs font-semibold text-primary-100">
+            {firstName}
+          </span>
+
+          <span className="font-display text-[10px] font-medium text-primary-300 mt-0.5">
+            {lastName}
+          </span>
+        </div>
+      )}
 
       {/* Avatar */}
       <div className="relative">
@@ -55,6 +62,7 @@ function UserAvatar({
           </div>
         )}
       </div>
+
     </div>
   )
 }

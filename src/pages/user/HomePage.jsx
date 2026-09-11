@@ -12,7 +12,7 @@ function HomePage() {
   return (
     <div >
       <section className="pb-128 sm:pb-88 md:pb-106 lg:pb-24 xl:pb-48">
-      <Hero />
+        <Hero />
       </section>
 
       <section className="pb-12">
