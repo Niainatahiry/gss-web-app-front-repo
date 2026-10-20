@@ -1,5 +1,5 @@
 import React from 'react'
-import { ShoppingCart, Heart, Star } from 'lucide-react'
+import { ShoppingCartPlus, Heart, Star } from 'lucide-react'
 
 function ProductInformation() {
 
@@ -211,7 +211,7 @@ function ProductInformation() {
             cursor-pointer
           "
         >
-          <ShoppingCart size={19} />
+          <ShoppingCartPlus size={19} />
         </button>
 
       </div>

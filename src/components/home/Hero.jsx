@@ -295,7 +295,7 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/50 via-50% to-primary to-100%" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/10 via-90% to-tertiary-500 to-100%" />
       
 
       {hasMultipleSlides && (

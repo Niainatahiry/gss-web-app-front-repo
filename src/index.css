@@ -2,6 +2,7 @@
 
 @theme {
 
+  --font-heading: ''
   --font-display: 'BDO Grotesk', sans-serif;
   --font-body:    'Cooper Hewitt', sans-serif;
   --font-mono:    'Space Mono', monospace;
@@ -15,6 +16,7 @@
   --color-primary-500:   #48457C;
   --color-primary-600:   #29274A;
   --color-primary-700:   #0B0A1A;
+
 
 
   /* Secondary: Accent color (badges, highlights, secondary actions) */

@@ -17,7 +17,6 @@ function Dashboard() {
           <StatsCard key={idx} {...stat} />
         ))}
       </div>
-      {/* Add charts, recent orders, etc. */}
     </div>
   );
 }

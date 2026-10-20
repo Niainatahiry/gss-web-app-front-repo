@@ -19,11 +19,10 @@ function ProductCard({
       />
 
       {/* Dark gradient overlay for better text readability */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
       {/* Glassmorphism Description Panel */}
       <div className="absolute bottom-0 left-0 right-0">
-        <div className="backdrop-blur-md rounded-b-sm bg-white/5 border border-white/20 p-3 shadow-lg">
+        <div className="backdrop-blur-md rounded-b-sm bg-tertiary-400 p-3 shadow-lg">
           
           {/* Product Name — fixed height for 3 lines max */}
           <h3 
@@ -39,7 +38,7 @@ function ProductCard({
             {/* Left: Discount + Price */}
             <div className="flex items-center gap-2">
               {/* Discount Badge */}
-              <span className="bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0">
+              <span className="bg-tertiary-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0">
                 -{discount}%
               </span>
 
