@@ -1,5 +1,3 @@
-import React from 'react'
-import '../../styles/marquee.css'
 import TestimonialCard from '../ui/TestimonialCard'
 
 // ── JSON Data — Real Facebook Reviews (anonymized) ──
@@ -54,17 +52,13 @@ const testimonialsData = [
   },
 ]
 
-// ── Marquee Section ──
 function TestimonialsSection() {
-  // Duplicate data for seamless infinite loop
-  const duplicatedData = [...testimonialsData, ...testimonialsData, ...testimonialsData]
-
   return (
-    <section className="w-full py-10 sm:py-12 md:py-16 bg-primary overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+    <section className="w-full py-10 sm:py-12 md:py-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
-        <div className="text-center">
+        <div className="mb-10 text-center md:mb-12">
           <h2 className="font-display text-3xl sm:text-5xl font-bold text-primary-100 mb-3">
             Que Disent nos <span className="text-secondary-100 font-display">Clients</span>
           </h2>
@@ -73,22 +67,10 @@ function TestimonialsSection() {
           </p>
         </div>
 
-      </div>
-
-      {/* Marquee Track */}
-      <div className="relative group">
-
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[var(--color-primary)] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[var(--color-primary)] to-transparent z-10 pointer-events-none" />
-
-        {/* Scrolling container */}
-        <div className="flex gap-6 animate-marquee hover:[animation-play-state:paused]">
-          {duplicatedData.map((testimonial, index) => (
-            <TestimonialCard
-              key={`${testimonial.id}-${index}`}
-              data={testimonial}
-            />
+        {/* Simple grid — no marquee, no continuous animation */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-4">
+          {testimonialsData.map((testimonial) => (
+            <TestimonialCard key={testimonial.id} data={testimonial} />
           ))}
         </div>
 
