@@ -1,5 +1,5 @@
 // src/components/ui/BrowseDropdown.jsx
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Monitor } from 'lucide-react'
 import PlaystationLogo from '../../assets/logos/consoleLogos/playstation.svg?react'
 import XboxLogo from '../../assets/logos/consoleLogos/Xbox_Logo.svg?react'
@@ -76,7 +76,7 @@ function BrowseDropdown() {
   return (
     <div 
       ref={containerRef}
-      className="relative flex items-center h-22"
+      className="relative flex items-center h-full"
       onMouseLeave={() => setIsOpen(false)}
     >
       <button 
@@ -96,7 +96,7 @@ function BrowseDropdown() {
 
       {isOpen && (
         <div 
-          className="fixed left-0 right-0 top-32 bg-[#201e3c] border-b border-primary-100/10 shadow-2xl z-40"
+          className="fixed left-0 right-0 top-36 bg-primary border-b border-primary-100/10 shadow-2xl z-40"
           onMouseEnter={() => setIsOpen(true)}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,7 +171,7 @@ function BrowseDropdown() {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <span className="inline-block bg-secondary text-primary-900 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded mb-2">
+                    <span className="inline-block bg-secondary text-primary-700 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded mb-2">
                       Offre limitée
                     </span>
                     <h4 className="text-white text-lg font-bold leading-tight mb-1">

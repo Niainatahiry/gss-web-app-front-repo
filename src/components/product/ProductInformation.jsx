@@ -1,4 +1,3 @@
-import React from 'react'
 import { ShoppingCartPlus, Heart, Star } from 'lucide-react'
 
 function ProductInformation() {
@@ -126,7 +125,7 @@ function ProductInformation() {
           px-6
           py-3
           rounded-sm
-          bg-green-500
+          bg-primary
           text-white
           text-xl
           font-bold

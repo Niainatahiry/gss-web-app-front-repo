@@ -23,7 +23,7 @@ export default function DebugOverlay() {
 
   return (
     <div className="fixed top-0 left-0 z-[9999] font-mono text-[11px] pointer-events-none select-none">
-      <div className="bg-black/70 text-gray-300 px-2 py-1 backdrop-blur-sm border-b border-r border-white/10">
+      <div className="bg-black/80 text-gray-300 px-2 py-1 border-b border-r border-white/10">
         <span className="text-cyan-400 font-bold">{dims.w}</span>
         ×
         <span className="text-cyan-400 font-bold">{dims.h}</span>

@@ -7,7 +7,7 @@ export default function ShoppingCartButton() {
 
   return (
 <button 
-  className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary-600 hover:bg-primary-500 text-primary-100 transition-all active:scale-95 cursor-pointer"
+  className="group relative inline-flex items-center justify-center w-9 h-9 rounded-lg bg-tertiary-550 hover:bg-tertiary-500 text-primary-100 transition-all active:scale-95 cursor-pointer"
   aria-label={`Panier, ${itemCount} articles`}
 >
   <ShoppingCart size={18} strokeWidth={2} className="group-hover:text-white transition-colors" />

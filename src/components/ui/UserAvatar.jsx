@@ -23,8 +23,9 @@ function UserAvatar({
   // Déconnecté → icône User minimaliste dans un cercle
   if (!username) {
     return (
-      <div className="w-9 h-9 rounded-full bg-primary-600 flex items-center justify-center">
+      <div className=" rounded-full bg-primary-600 flex items-center justify-center">
         <User size={18} strokeWidth={2} className="text-primary-100" />
+        <span>se connecter</span>
       </div>
     )
   }

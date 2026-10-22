@@ -1,5 +1,4 @@
 import { SendHorizontal } from 'lucide-react'
-import React from 'react'
 
 function PromotionDescription({ 
   endDate = "15 Juillet 2026",
@@ -24,8 +23,8 @@ function PromotionDescription({
             Jusqu'au <span className="text-secondary">{endDate}</span><span className="hidden sm:inline"> profitez de</span> :
           </div>
 
-          <div className="bg-green-500 h-20 sm:h-30 justify-center items-center rounded-sm px-4 py-3 sm:px-6 sm:py-5 xl:px-8 xl:py-6 2xl:px-10 2xl:py-8 flex">
-            <span className="font-display text-3xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-black text-primary-100">
+          <div className="bg-secondary h-20 sm:h-30 justify-center items-center rounded-sm px-4 py-3 sm:px-6 sm:py-5 xl:px-8 xl:py-6 2xl:px-10 2xl:py-8 flex">
+            <span className="font-display text-3xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-black text-black/90">
               -{discount}%
             </span>
           </div>
@@ -36,7 +35,7 @@ function PromotionDescription({
             Économisez jusqu'à <span className="font-bold text-secondary">-{maxSavings}%</span> sur <span className="font-bold text-primary-100">{gameName}</span> {description}
           </p>
 
-          <button className="bg-secondary hover:bg-secondary-300 text-secondary-700 font-display font-bold text-xs xl:text-sm 2xl:text-sm uppercase tracking-wide rounded-lg px-6 py-3 xl:px-6 xl:py-2.5 2xl:px-8 2xl:py-3 transition-colors cursor-pointer w-fit mt-2 xl:mt-3 2xl:mt-3.5 flex items-center gap-2 xl:gap-3 2xl:gap-4">
+          <button className="bg-secondary-300 hover:bg-secondary-100 text-black/90 font-display font-bold text-xs xl:text-sm 2xl:text-sm uppercase tracking-wide rounded-lg px-6 py-3 xl:px-6 xl:py-2.5 2xl:px-8 2xl:py-3 transition-colors cursor-pointer w-fit mt-2 xl:mt-3 2xl:mt-3.5 flex items-center gap-2 xl:gap-3 2xl:gap-4">
             Voir l'offre 
             <div className="inline-block w-[18px] h-[18px] xl:w-5 xl:h-5 2xl:w-6 2xl:h-6">
               <SendHorizontal className="w-full h-full" />

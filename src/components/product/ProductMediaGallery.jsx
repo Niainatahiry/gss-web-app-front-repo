@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 function ProductMediaGallery() {
@@ -88,13 +88,12 @@ function ProductMediaGallery() {
             w-10
             h-10
             rounded-full
-            bg-black/40
-            backdrop-blur-sm
+            bg-black/50
             flex
             items-center
             justify-center
             text-white
-            hover:bg-black/60
+            hover:bg-black/70
             transition-colors
             cursor-pointer
           "
@@ -114,13 +113,12 @@ function ProductMediaGallery() {
             w-10
             h-10
             rounded-full
-            bg-black/40
-            backdrop-blur-sm
+            bg-black/50
             flex
             items-center
             justify-center
             text-white
-            hover:bg-black/60
+            hover:bg-black/70
             transition-colors
             cursor-pointer
           "
