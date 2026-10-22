@@ -2,10 +2,18 @@
 
 @theme {
 
-  --font-heading: ''
+  --font-heading: 'Bebas Neue', sans-serif;
   --font-display: 'BDO Grotesk', sans-serif;
-  --font-body:    'Cooper Hewitt', sans-serif;
+  --font-body:    'Urbanist', sans-serif;
   --font-mono:    'Space Mono', monospace;
+  /* ── Font Weight Variables ── */
+  --font-weight-light:   300;
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:    700;
+  --font-weight-extrabold: 800;
+  --font-weight-black:   900;
   /* ── Color Variables ── */
   /* Primary: Main brand color (buttons, links, active states) */
   --color-primary:         #0B0A1A;
@@ -36,6 +44,7 @@
   --color-tertiary-300: #0AAEAE;
   --color-tertiary-400: #058685;
   --color-tertiary-500: #035F5E;
+  --color-tertiary-550: #124956; /* Button variant — to test */
   --color-tertiary-600: #013B3B;
   --color-tertiary-700: #001A1A;
 }
@@ -84,8 +93,8 @@
   font-display: swap;
 }
 
-/* ── Cooper Hewitt ── */
-@font-face {
+/* ── Cooper Hewitt ── */ /* COMMENTED OUT - revert by removing these lines */
+/* @font-face {
   font-family: 'Cooper Hewitt';
   src: url('/src/assets/fonts/cooper-hewitt-fixed-for-windows-master/cooper-hewitt-fixed-for-windows-master/CooperHewitt-Light.ttf') format('truetype');
   font-weight: 300;
@@ -119,7 +128,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 /* ── Space Mono ── */
 @font-face {
@@ -151,8 +160,45 @@
   font-display: swap;
 }
 
+/* ── Bebas Neue ── */
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('/src/assets/fonts/Bebas-Neue/BebasNeue-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Urbanist Variable Font ── */
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/src/assets/fonts/Urbanist/Urbanist-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/src/assets/fonts/Urbanist/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* ── Default font stack for the whole app ── */
 body {
   font-family: var(--font-body);
   font-weight: var(--font-weight-regular);
+}
+
+/* ── Auto-rotation progress bar (PopularGames) ──
+   Animated on the compositor via transform, so the carousel timer no longer
+   needs a React state update every frame. */
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
