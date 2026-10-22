@@ -1,5 +1,3 @@
-import React from 'react'
-
 function GameCardThirdType({
   productType,     
   productName,
@@ -19,7 +17,7 @@ function GameCardThirdType({
             {productType}
           </span>
         )}
-        <h3 className="font-display text-sm text-primary-100 leading-tight truncate">
+        <h3 className="font-body text-sm text-primary-100 leading-tight truncate">
           {productName}{edition && ` ${edition}`}
         </h3>
       </div>
@@ -36,15 +34,15 @@ function GameCardThirdType({
 
       {/* Footer — Discount + Prices */}
       <div className="flex justify-end items-center">
-        <div className="inline-flex items-center bg-primary-600">
-          <span className="shrink-0 inline-flex px-3 py-2.5 items-center justify-center bg-green-500 text-white text-xs font-bold">
+        <div className="inline-flex items-center bg-tertiary-400">
+          <span className="shrink-0 inline-flex px-3 py-2.5 items-center justify-center bg-secondary text-secondary-700 text-sm font-bold">
             -{discount}%
           </span>
           <div className="flex items-baseline gap-1.5 px-4">
             <span className="text-xs text-white/50 line-through">
               {originalPrice.toLocaleString()}
             </span>
-            <span className="font-mono text-sm text-white font-bold">
+            <span className="font-body text-sm text-white font-bold">
               {salePrice.toLocaleString()} {currency}
             </span>
           </div>

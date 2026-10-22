@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import logoSrc from '../../assets/logos/gss-logo-with-white-text.png'
 import logoMobile from '../../assets/logos/gss-logo-transparent-for-dark-background.png'
 import ShoppingCart from '../ui/ShoppingCart'
@@ -6,6 +6,7 @@ import UserAvatar from '../ui/UserAvatar'
 import { Search, Menu, X, User } from 'lucide-react'
 import BrowseDropdown from '../ui/BrowseDropdown'
 import { Link } from 'react-router-dom'
+import { pauseHeroAutoplay, resumeHeroAutoplay } from '../../utils/heroAutoplay'
 
 function Header() {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false)
@@ -29,7 +30,11 @@ function Header() {
   ]
 
   return (
-    <header className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl hover:bg-primary-700 transition-colors duration-300">
+    <header
+      className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl"
+      onPointerEnter={pauseHeroAutoplay}
+      onPointerLeave={resumeHeroAutoplay}
+    >
 
   {/* ==================== TOP ROW ==================== */}
   <div className="w-full px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
@@ -80,8 +85,8 @@ function Header() {
         rounded-l-full
         bg-[#f5f5f0]
         border border-r-0 border-primary-100/10
-        text-primary-900
-        placeholder:text-primary-900/40
+        text-primary-700
+        placeholder:text-primary-700/40
         outline-none
         transition-all
         focus:bg-white
@@ -96,9 +101,9 @@ function Header() {
         h-14
         px-6
         rounded-r-full
-        bg-secondary
-        hover:bg-secondary/90
-        text-primary-900
+        bg-secondary/80
+        hover:bg-secondary
+        text-secondary-700
         font-medium
         flex items-center gap-2
         transition-colors

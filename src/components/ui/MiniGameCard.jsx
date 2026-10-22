@@ -1,5 +1,3 @@
-import React from 'react'
-
 function MiniGameCard({
   imageUrl, 
   productName, 
@@ -15,11 +13,16 @@ function MiniGameCard({
       <img
         src={imageUrl}
         alt={productName}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        className="absolute inset-0 w-full h-full object-cover duration-300"
+      />
+            {/* Glass shine — sweeps across the artwork on hover, stays under the panel */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 translate-x-[-250%] bg-linear-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[250%] motion-reduce:transition-none"
       />
       {/* Discount Ticket */}
       <div className="absolute top-0 left-3 z-10">
-        <div className="bg-green-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-b-sm shadow-md">
+        <div className="bg-secondary text-black text-xs font-bold px-2.5 py-1 rounded-b-sm shadow-md">
           -{discount}%
         </div>
       </div>
@@ -32,9 +35,8 @@ function MiniGameCard({
 
   <div className="
     relative
-    backdrop-blur-md
     rounded-b-sm
-    bg-white/5
+    bg-tertiary-400
     border border-white/20
     p-3
     shadow-lg

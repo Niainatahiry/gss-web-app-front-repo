@@ -1,8 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import heroImage from '../../assets/images/hero-image.jpg'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import HeroGameCard from '../ui/HeroGameCard'
 import PromotionDescription from '../ui/PromotionDescription'
+import { onHeroAutoplayPause, onHeroAutoplayResume } from '../../utils/heroAutoplay'
+
+const STEAM_LOGO = "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
 
 const slidesData = [
   {
@@ -15,25 +18,31 @@ const slidesData = [
         id: 1,
         imageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2483190/711e39803402def82a90e1f31578c64744f952f3/library_capsule_2x.jpg",
         productName: "FORZA HORIZON 6 STANDARD Edition",
+        discount: 35,
         originalPrice: 300000,
         salePrice: 195000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       },
       {
         id: 2,
         imageUrl: "https://store-images.s-microsoft.com/image/apps.1471.13782753939064744.ecc264a7-2365-4110-b06e-a6f978c761d7.e0760a01-ad9a-4fce-bb5a-bbe691096d01",
         productName: "FORZA HORIZON 6 DELUXE Edition",
+        discount: 44,
         originalPrice: 425000,
         salePrice: 240000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       },
       {
         id: 3,
         imageUrl: "https://store-images.s-microsoft.com/image/apps.60342.13547047233571036.013c5ec3-a5d7-4e8a-83e7-470299116376.2346f664-c01a-4b06-a92c-4819a43e8f75",
         productName: "FORZA HORIZON 6 PREMIUM Edition",
+        discount: 42,
         originalPrice: 510000,
         salePrice: 295000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       }
     ],
     promotion: {
@@ -54,25 +63,31 @@ const slidesData = [
         id: 4,
         imageUrl: "https://store-images.s-microsoft.com/image/apps.25322.14537704372270848.6ecb6038-5426-409a-8660-158d1eb64fb0.d230176a-d7a2-4696-ad23-ff53a6e004df",
         productName: "ELDEN RING STANDARD Edition",
+        discount: 40,
         originalPrice: 350000,
         salePrice: 210000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       },
       {
         id: 5,
         imageUrl: "https://store-images.s-microsoft.com/image/apps.26403.13995152356447586.3e46d8cd-8538-4377-826c-ab6ef69216af.2a425d27-aa3b-44f5-85c6-9424a736b7be",
         productName: "ELDEN RING DELUXE Edition",
+        discount: 42,
         originalPrice: 480000,
         salePrice: 280000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       },
       {
         id: 6,
         imageUrl: "https://store-images.s-microsoft.com/image/apps.19413.14509973624768376.8012321a-394e-42b7-ba2b-040f89ebe965.a1419550-a86b-4ca1-9063-0b92a45c0604",
         productName: "ELDEN RING Shadow of the Erdtree Edition",
+        discount: 40,
         originalPrice: 550000,
         salePrice: 330000,
-        currency: "AR"
+        currency: "AR",
+        launcherLogo: STEAM_LOGO
       }
     ],
     promotion: {
@@ -93,17 +108,21 @@ const slidesData = [
       id: 7,
       imageUrl: "https://store-images.s-microsoft.com/image/apps.1218.13550041517005289.7f3b0841-0084-4cae-88f4-8996d95d574f.96567331-f46b-4380-96a6-ab86b5c38634",
       productName: "ARC RAIDERS STANDARD Edition",
+      discount: 28,
       originalPrice: 250000,
       salePrice: 180000,
-      currency: "AR"
+      currency: "AR",
+      launcherLogo: STEAM_LOGO
     },
     {
       id: 8,
       imageUrl: "https://store-images.s-microsoft.com/image/apps.27637.13724331513791367.30e3cd9a-beea-4797-8509-a950e1c1e48d.7f6d6861-aac4-4ec0-bcbf-42f8323c5bb0?",
       productName: "ARC RAIDERS Founder Edition",
+      discount: 27,
       originalPrice: 320000,
       salePrice: 235000,
-      currency: "AR"
+      currency: "AR",
+      launcherLogo: STEAM_LOGO
     },
   ],
   promotion: {
@@ -118,131 +137,177 @@ const slidesData = [
 
 function Hero() {
   const AUTO_SLIDE_INTERVAL = 10800
-  const TRANSITION_DURATION = 500
+  const SLIDE_DURATION = 500
   const RESET_DELAY = 800
-  const FADE_DURATION = 300
+  const CONTENT_FADE_DURATION = 250
 
-  const hasMultipleSlides = slidesData.length > 1
+  const totalSlides = slidesData.length
+  const hasMultipleSlides = totalSlides > 1
 
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [visibleSlide, setVisibleSlide] = useState(0)
-  const [isFading, setIsFading] = useState(false)
+  /* `slideIndex` runs over the extended list (real slides + one clone of the
+     first) so the background can wrap around seamlessly. */
+  const [slideIndex, setSlideIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(true)
 
-  const currentSlideRef = useRef(0)
+  const slideIndexRef = useRef(0)
   const isResettingRef = useRef(false)
-  const transitionTimerRef = useRef(null)
-  const autoTimerRef = useRef(null)
-
-  useEffect(() => {
-    currentSlideRef.current = currentSlide
-  }, [currentSlide])
+  const resetTimerRef = useRef(null)
+  const isAutoplayPausedRef = useRef(false)
 
   const extendedSlides = hasMultipleSlides
     ? [...slidesData, slidesData[0]]
     : slidesData
 
+  const activeSlideIndex = slideIndex % totalSlides
+
+  /**
+   * Warm the cache once on mount: every slide's background and card artwork is
+   * fetched and decoded up front, so nothing gets decoded on the main thread
+   * while the strip is sliding.
+   */
   useEffect(() => {
-    if (!isFading) {
-      setVisibleSlide(currentSlide % slidesData.length)
-    }
-  }, [isFading, currentSlide])
+    const urls = new Set(
+      slidesData.flatMap((slide) => [
+        slide.imageUrl,
+        ...slide.games.map((game) => game.imageUrl),
+        ...slide.games.map((game) => game.launcherLogo).filter(Boolean)
+      ])
+    )
 
-  const resetToSlide0 = useCallback(() => {
-    if (!hasMultipleSlides) return
-    isResettingRef.current = true
-    setIsTransitioning(false)
-    setCurrentSlide(0)
-    currentSlideRef.current = 0
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setIsTransitioning(true)
-        isResettingRef.current = false
-      })
+    urls.forEach((url) => {
+      const image = new Image()
+      image.decoding = 'async'
+      image.src = url
     })
-  }, [hasMultipleSlides])
+  }, [])
 
   const nextSlide = useCallback(() => {
     if (!hasMultipleSlides || isResettingRef.current) return
 
-    const next = currentSlideRef.current + 1
-    const totalRealSlides = slidesData.length
-
-    setIsFading(true)
-
-    setTimeout(() => setIsFading(false), FADE_DURATION)
-
-    if (next === totalRealSlides) {
-      setIsTransitioning(true)
-      setCurrentSlide(next)
-      currentSlideRef.current = next
-
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
-      transitionTimerRef.current = setTimeout(() => {
-        resetToSlide0()
-      }, TRANSITION_DURATION + RESET_DELAY)
-    } else {
-      setIsTransitioning(true)
-      setCurrentSlide(next)
-      currentSlideRef.current = next
-    }
-  }, [hasMultipleSlides, resetToSlide0])
-
-  const prevSlide = useCallback(() => {
-    if (!hasMultipleSlides || isResettingRef.current) return
-
-    const prev = currentSlideRef.current - 1
-    const totalRealSlides = slidesData.length
-
-    setIsFading(true)
-    setTimeout(() => setIsFading(false), FADE_DURATION)
-
-    if (currentSlideRef.current === 0) {
+    /* On the clone after wrapping: snap back to the real first slide without
+       animating (same artwork), so the next click advances normally. */
+    if (slideIndexRef.current >= totalSlides) {
+      clearTimeout(resetTimerRef.current)
       isResettingRef.current = true
       setIsTransitioning(false)
-      setCurrentSlide(totalRealSlides)
-      currentSlideRef.current = totalRealSlides
+      setSlideIndex(0)
+      slideIndexRef.current = 0
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setIsTransitioning(true)
-          setCurrentSlide(totalRealSlides - 1)
-          currentSlideRef.current = totalRealSlides - 1
           isResettingRef.current = false
         })
       })
-    } else {
-      setIsTransitioning(true)
-      setCurrentSlide(prev)
-      currentSlideRef.current = prev
+      return
     }
-  }, [hasMultipleSlides])
+
+    clearTimeout(resetTimerRef.current)
+
+    const next = slideIndexRef.current + 1
+    setIsTransitioning(true)
+    setSlideIndex(next)
+    slideIndexRef.current = next
+
+    /* Reached the clone: after the slide settles, jump back to the real first
+       slide with the transition disabled (invisible, same artwork). */
+    if (next === totalSlides) {
+      resetTimerRef.current = setTimeout(() => {
+        isResettingRef.current = true
+        setIsTransitioning(false)
+        setSlideIndex(0)
+        slideIndexRef.current = 0
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setIsTransitioning(true)
+            isResettingRef.current = false
+          })
+        })
+      }, SLIDE_DURATION + RESET_DELAY)
+    }
+  }, [hasMultipleSlides, totalSlides])
+
+  const prevSlide = useCallback(() => {
+    if (!hasMultipleSlides || isResettingRef.current) return
+
+    clearTimeout(resetTimerRef.current)
+
+    /* On the clone after a wrap: slide back to the last real slide. */
+    if (slideIndexRef.current >= totalSlides) {
+      const prev = totalSlides - 1
+      setIsTransitioning(true)
+      setSlideIndex(prev)
+      slideIndexRef.current = prev
+      return
+    }
+
+    if (slideIndexRef.current === 0) {
+      /* At the first slide: jump to the clone with no transition, then slide
+         back to the last real slide. */
+      isResettingRef.current = true
+      setIsTransitioning(false)
+      setSlideIndex(totalSlides)
+      slideIndexRef.current = totalSlides
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(true)
+          setSlideIndex(totalSlides - 1)
+          slideIndexRef.current = totalSlides - 1
+          isResettingRef.current = false
+        })
+      })
+      return
+    }
+
+    const prev = slideIndexRef.current - 1
+    setIsTransitioning(true)
+    setSlideIndex(prev)
+    slideIndexRef.current = prev
+  }, [hasMultipleSlides, totalSlides])
+
+  /* Auto-advance. Skipped while the pointer sits over the header
+     (see utils/heroAutoplay). */
+  useEffect(() => {
+    if (!hasMultipleSlides) return undefined
+
+    const intervalId = setInterval(() => {
+      if (isAutoplayPausedRef.current) return
+      nextSlide()
+    }, AUTO_SLIDE_INTERVAL)
+
+    return () => {
+      clearInterval(intervalId)
+      clearTimeout(resetTimerRef.current)
+    }
+  }, [hasMultipleSlides, nextSlide])
 
   useEffect(() => {
-    if (!hasMultipleSlides) return
+    const pause = () => { isAutoplayPausedRef.current = true }
+    const resume = () => { isAutoplayPausedRef.current = false }
 
-    autoTimerRef.current = setInterval(nextSlide, AUTO_SLIDE_INTERVAL)
+    const removePause = onHeroAutoplayPause(pause)
+    const removeResume = onHeroAutoplayResume(resume)
+
     return () => {
-      clearInterval(autoTimerRef.current)
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
+      removePause()
+      removeResume()
     }
-  }, [nextSlide, hasMultipleSlides])
-
-  const slide = slidesData[visibleSlide]
+  }, [])
 
   return (
     <section className="relative w-full h-125 md:h-150 lg:h-175">
-      {/* Background */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Background strip — slides horizontally. `willChange` is only set while
+          a transition runs so the wide strip isn't kept as a layer when idle. */}
+      <div className="absolute inset-0 overflow-hidden bg-primary-700 [contain:strict]">
         <div
           className="absolute inset-0 flex"
           style={{
-            transform: hasMultipleSlides
-              ? `translateX(-${currentSlide * 100}%)`
-              : 'none',
-            transition: isTransitioning && hasMultipleSlides
-              ? `transform ${TRANSITION_DURATION}ms ease-in-out`
+            willChange: hasMultipleSlides && isTransitioning ? 'transform' : 'auto',
+            transform: `translateX(-${slideIndex * 100}%)`,
+            transition: hasMultipleSlides && isTransitioning
+              ? `transform ${SLIDE_DURATION}ms ease-in-out`
               : 'none'
           }}
         >
@@ -250,67 +315,88 @@ function Hero() {
             <img
               key={`${s.id}-${i}`}
               src={s.imageUrl}
-              alt={s.title}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
               className="w-full h-full object-cover shrink-0"
             />
           ))}
         </div>
+
+        {/* Scrim — darkens bright artwork so the white text stays readable */}
+        <div className="absolute inset-0 bg-tertiary-700/35" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/55 via-black/20 to-transparent" />
       </div>
 
-      {/* Content wrapper */}
-      <div
-        className={`relative z-10 h-full flex flex-col items-center justify-center pb-36 px-4 sm:px-6 lg:px-8 transition-opacity duration-300 ${
-          isFading ? 'opacity-0' : 'opacity-100'
-        }`}
-      >
-        <div className="w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
-          <div className="mb-6 xl:mb-7 2xl:mb-8">
-            <h2 className="font-display text-lg text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-lg 2xl:text-3xl font-bold text-white drop-shadow-xl uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
-              {slide.title}
-            </h2>
-            <p className="font-display text-3xl text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-5xl 2xl:text-7xl font-black text-white drop-shadow-xl uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
-              {slide.subtitle}
-            </p>
-          </div>
-        </div>
+      {/* Bottom fade — artwork dissolves into the page background (tertiary-500)
+          so the hero has no hard edge before the next section */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 sm:h-48 lg:h-64 bg-linear-to-b from-transparent to-tertiary-550" />
 
-        <div
-          className={`absolute top-[57%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0 transition-opacity duration-300 ${
-            isFading ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
-          <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full sm:w-full">
-            <div className="shrink-0 bg">
-              <PromotionDescription {...slide.promotion} />
-            </div>
-            
-            {/* Game cards — scrollable horizontally on small screens, no scrollbar */}
-            <div className="px-6 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-end overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {slide.games.map(game => (
-                <HeroGameCard key={game.id} {...game} />
-              ))}
-            </div>
+      {/* Content layers — short 250 ms fade in place while the background
+          slides, so text and cards don't pop between slides. */}
+      <div className="relative z-10 h-full">
+        {slidesData.map((slide, index) => {
+          const isActive = index === activeSlideIndex
 
-          </div>
-        </div>
+          return (
+            <div
+              key={slide.id}
+              aria-hidden={!isActive}
+              className={`absolute inset-0 pt-32 flex flex-col items-center justify-center pb-36 px-4 sm:px-6 lg:px-8 transition-opacity ease-in-out ${
+                isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
+              style={{ transitionDuration: `${CONTENT_FADE_DURATION}ms` }}
+            >
+              <div className="w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
+                <div className="mb-6 xl:mb-7 2xl:mb-8">
+                  <p className="font-heading text-3xl text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-5xl 2xl:text-8xl font-black text-white uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
+                    {slide.subtitle}
+                  </p>
+                  <h2 className="font-body text-lg text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-lg 2xl:text-xl font-bold text-white uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
+                    {slide.title}
+                  </h2>
+                </div>
+              </div>
+
+              <div className="absolute top-[64%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
+                <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full sm:w-full">
+
+                  <div className="px-6 xl:px-0 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-start overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    {slide.games.map(game => (
+                      <HeroGameCard key={game.id} {...game} />
+                    ))}
+                  </div>
+
+                  <div className="shrink-0 bg">
+                    <PromotionDescription {...slide.promotion} />
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/10 via-90% to-tertiary-500 to-100%" />
       
 
       {hasMultipleSlides && (
         <>
           <button
+            type="button"
+            aria-label="Slide précédent"
             onClick={prevSlide}
-            className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
+            className="absolute left-2 md:left-5 lg:left-8 top-1/2 -translate-y-1/2 z-30 p-2 text-white hover:text-secondary-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-x-0.5 cursor-pointer"
           >
-            <ChevronLeft size={24} className="text-primary-100" />
+            <FontAwesomeIcon icon={faAngleLeft} className="text-5xl md:text-6xl" />
           </button>
           <button
+            type="button"
+            aria-label="Slide suivant"
             onClick={nextSlide}
-            className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-primary-600/80 hover:bg-primary-500 flex items-center justify-center transition-colors cursor-pointer z-30"
+            className="absolute right-2 md:right-5 lg:right-8 top-1/2 -translate-y-1/2 z-30 p-2 text-secondary hover:text-secondary-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:translate-x-0.5 cursor-pointer"
           >
-            <ChevronRight size={24} className="text-primary-100" />
+            <FontAwesomeIcon icon={faAngleRight} className="text-5xl md:text-6xl" />
           </button>
         </>
       )}

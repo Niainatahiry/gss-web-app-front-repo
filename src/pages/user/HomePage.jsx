@@ -11,7 +11,7 @@ import SelectPlatformsSection from '../../components/home/SelectPlatformsSection
 function HomePage() {
   return (
     <div >
-      <section className="pb-128 sm:pb-88 md:pb-106 lg:pb-24 xl:pb-48">
+      <section className="pb-128 sm:pb-88 md:pb-106 lg:pb-24 xl:pb-72">
         <Hero />
       </section>
 
@@ -25,12 +25,13 @@ function HomePage() {
       <section className="pb-12">
         <Recommendations />
       </section>
+              <section className="pb-12">
+          <SpecialPromo />
+        </section>
       <section className="pb-12">
         <TestimonialsSection />
       </section>
-        <section className="pb-12">
-          <SpecialPromo />
-        </section>
+
         <section className="pb-12">
           <SelectPlatformsSection  />
         </section>

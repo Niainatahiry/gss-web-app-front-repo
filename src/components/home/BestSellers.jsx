@@ -52,16 +52,6 @@ const bestSellersData = [
     salePrice: 315000,
     currency: "AR",
     launcherLogo: "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
-  },
-  {
-    id: 6,
-    imageUrl: "https://store-images.s-microsoft.com/image/apps.64128.13853283465555502.df9a42b7-95ee-4088-89b3-08a50204f8ef.da71d8cf-7bb7-4f0d-a0e0-9df90aba8b88",
-    productName: "Hogwarts Legacy Deluxe Edition PC Steam CD Key",
-    discount: 45,
-    originalPrice: 380000,
-    salePrice: 209000,
-    currency: "AR",
-    launcherLogo: "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
   }
 ]
 
@@ -70,7 +60,7 @@ function BestSellers() {
     <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
-        <h2 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-primary-100">
+        <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
           Meilleures ventes
         </h2>
         <a 
@@ -82,9 +72,9 @@ function BestSellers() {
         </a>
       </div>
 
-      {/* Scrollable on < xl — Grid on xl+ */}
+      {/* Scrollable on < xl — Grid of 5 on xl+ */}
       <div 
-        className="flex xl:grid xl:grid-cols-6 gap-4 overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0"
+        className="flex xl:grid xl:grid-cols-5 gap-4 overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style>{`
