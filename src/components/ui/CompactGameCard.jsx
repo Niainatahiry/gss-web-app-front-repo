@@ -1,20 +1,21 @@
-import React from 'react'
+import { memo } from 'react'
 import { ChevronRight } from 'lucide-react'
 
-function CompactGameCard({ 
+function CompactGameCard({
+  index,
   portraitImage,
   productName,
   discount,
   originalPrice,
   salePrice,
   currency,
-  isActive, 
-  onClick,
-  timerProgress
+  isActive,
+  onSelect,
+  progressDuration = 5000
 }) {
   return (
     <button
-      onClick={onClick}
+      onClick={() => onSelect?.(index)}
       className={`relative flex items-center gap-[0.6vw] p-[0.5vw] rounded-lg transition-all duration-200 text-left w-full h-full overflow-hidden ${
         isActive 
           ? 'bg-white/10 border border-white/20' 
@@ -42,13 +43,13 @@ function CompactGameCard({
           {productName}
         </h4>
         <div className="flex items-center gap-[0.35vw] mt-[0.2vw]">
-          <span className="bg-green-500/80 text-white text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-[10px] font-bold px-[0.3vw] py-[0.1vw] rounded">
+          <span className="bg-secondary text-tertiary-700 text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-xs font-bold px-[0.3vw] py-[0.1vw] rounded">
             -{discount}%
           </span>
-          <span className="text-white/50 text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-[10px] line-through">
+          <span className="text-white/50 text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-sm line-through">
             {originalPrice.toLocaleString()}
           </span>
-          <span className="text-white text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-[10px] font-bold">
+          <span className="text-white text-[8px] sm:text-[9px] md:text-[10px] lg:text-[10px] xl:text-sm font-bold">
             {salePrice.toLocaleString()} {currency}
           </span>
         </div>
@@ -60,15 +61,12 @@ function CompactGameCard({
         className={`shrink-0 transition-all ${isActive ? 'text-white opacity-100' : 'text-white/30 opacity-0'}`} 
       />
 
-      {/* Timer progress bar */}
+      {/* Timer progress bar — pure CSS, restarts when this card becomes active */}
       {isActive && (
         <div className="absolute bottom-0 left-0 right-0 h-[0.12vw] bg-white/10">
           <div
-            className="h-full bg-secondary-100 rounded-b"
-            style={{ 
-              width: `${timerProgress}%`,
-              transition: 'width 50ms linear'
-            }}
+            className="h-full origin-left bg-secondary-100 rounded-b"
+            style={{ animation: `progress-fill ${progressDuration}ms linear forwards` }}
           />
         </div>
       )}
@@ -76,4 +74,4 @@ function CompactGameCard({
   )
 }
 
-export default CompactGameCard
+export default memo(CompactGameCard)

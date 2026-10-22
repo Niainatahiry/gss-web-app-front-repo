@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { ArrowRight } from 'lucide-react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
@@ -75,42 +75,54 @@ const TIMER_DURATION = 5000
 
 function PopularGames() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [timerProgress, setTimerProgress] = useState(0)
   const [userInitiated, setUserInitiated] = useState(false)
+  const [isSectionVisible, setIsSectionVisible] = useState(false)
+  const [isTabVisible, setIsTabVisible] = useState(() => !document.hidden)
+
+  const sectionRef = useRef(null)
   const scrollContainerRef = useRef(null)
   const cardRefs = useRef([])
-  
+
   const activeGame = popularGamesData[activeIndex]
 
-  // Desktop auto-rotation timer — ONLY on md+
+  /* Only rotate while the section is on screen. The previous version polled
+     React state every 16 ms, which re-rendered the whole section ~60x/s. */
   useEffect(() => {
-    const isDesktop = window.innerWidth >= 768
-    if (!isDesktop) return
+    const section = sectionRef.current
+    if (!section) return undefined
 
-    const startTime = Date.now()
-    
-    const progressInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime
-      const progress = Math.min((elapsed / TIMER_DURATION) * 100, 100)
-      setTimerProgress(progress)
-    }, 16)
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsSectionVisible(entry.isIntersecting),
+      { threshold: 0.15 }
+    )
 
-    const switchTimeout = setTimeout(() => {
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const handleVisibilityChange = () => setIsTabVisible(!document.hidden)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
+
+  // Desktop auto-rotation — one timeout per cycle, progress is pure CSS.
+  useEffect(() => {
+    if (!isSectionVisible || !isTabVisible) return undefined
+    if (window.innerWidth < 768) return undefined
+
+    const timeoutId = setTimeout(() => {
       setUserInitiated(false)
       setActiveIndex(prev => (prev + 1) % popularGamesData.length)
-      setTimerProgress(0)
     }, TIMER_DURATION)
 
-    return () => {
-      clearInterval(progressInterval)
-      clearTimeout(switchTimeout)
-    }
-  }, [activeIndex])
+    return () => clearTimeout(timeoutId)
+  }, [activeIndex, isSectionVisible, isTabVisible])
 
   // Auto-scroll ONLY when user clicked (not timer)
   useEffect(() => {
     if (!userInitiated) return
-    
+
     const card = cardRefs.current[activeIndex]
     const container = scrollContainerRef.current
     if (!card || !container) return
@@ -137,7 +149,6 @@ function PopularGames() {
             const index = Number(entry.target.dataset.index)
             setUserInitiated(false)
             setActiveIndex(index)
-            setTimerProgress(0)
           }
         })
       },
@@ -154,19 +165,26 @@ function PopularGames() {
     return () => observer.disconnect()
   }, [])
 
-  const handleGameClick = useCallback((index) => {
+  const handleGameSelect = useCallback((index) => {
     setUserInitiated(true)
     setActiveIndex(index)
-    setTimerProgress(0)
   }, [])
+
+  const handleBuy = useCallback(() => {
+    console.log('Buy', popularGamesData[activeIndex].productName)
+  }, [activeIndex])
+
+  const handleDetails = useCallback(() => {
+    console.log('Details', popularGamesData[activeIndex].productName)
+  }, [activeIndex])
 
   const itemCount = popularGamesData.length
 
   return (
-    <div className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+    <div ref={sectionRef} className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
-        <h2 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-tertiary-100">
+        <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
           Populaires en ce moment
         </h2>
         <a 
@@ -200,9 +218,9 @@ function PopularGames() {
             salePrice={activeGame.salePrice}
             currency={activeGame.currency}
             primaryButtonText="Acheter maintenant"
-            primaryButtonAction={() => console.log('Buy', activeGame.productName)}
+            primaryButtonAction={handleBuy}
             secondaryButtonText="Détails"
-            secondaryButtonAction={() => console.log('Details', activeGame.productName)}
+            secondaryButtonAction={handleDetails}
           />
         </div>
 
@@ -211,6 +229,7 @@ function PopularGames() {
           {popularGamesData.map((game, index) => (
             <CompactGameCard
               key={game.id}
+              index={index}
               portraitImage={game.portraitImage}
               productName={game.productName}
               discount={game.discount}
@@ -218,8 +237,8 @@ function PopularGames() {
               salePrice={game.salePrice}
               currency={game.currency}
               isActive={index === activeIndex}
-              onClick={() => handleGameClick(index)}
-              timerProgress={index === activeIndex ? timerProgress : 100}
+              onSelect={handleGameSelect}
+              progressDuration={TIMER_DURATION}
             />
           ))}
         </div>
@@ -242,7 +261,7 @@ function PopularGames() {
               key={game.id}
               ref={(el) => { cardRefs.current[index] = el }}
               data-index={index}
-              onClick={() => handleGameClick(index)}
+              onClick={() => handleGameSelect(index)}
               className={`relative flex-shrink-0 w-[75vw] rounded-2xl overflow-hidden snap-center cursor-pointer transition-all duration-300 ${
                 index === activeIndex 
                   ? 'scale-100 opacity-100' 
@@ -276,7 +295,7 @@ function PopularGames() {
                 </p>
                 
                 <div className="flex items-center gap-2">
-                  <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                  <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded">
                     -{game.discount}%
                   </span>
                   <span className="text-white/50 text-xs line-through">
@@ -296,7 +315,7 @@ function PopularGames() {
         {popularGamesData.map((_, index) => (
           <button
             key={index}
-            onClick={() => handleGameClick(index)}
+            onClick={() => handleGameSelect(index)}
             className={`h-2 rounded-full transition-all cursor-pointer ${
               index === activeIndex ? 'bg-white w-6' : 'bg-white/30 w-2 hover:bg-white/50'
             }`}

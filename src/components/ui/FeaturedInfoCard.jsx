@@ -1,4 +1,4 @@
-import React from 'react'
+import { memo } from 'react'
 
 function FeaturedInfoCard({
   title,
@@ -64,7 +64,7 @@ function FeaturedInfoCard({
           {(discount || originalPrice || salePrice) && (
             <div className="flex items-center gap-1.5 sm:gap-2">
               {discount && (
-                <span className="bg-green-500 text-white text-[10px] sm:text-xs md:text-sm font-bold px-1 sm:px-1.5 py-0.5 rounded">
+                <span className="bg-primary text-white text-[10px] sm:text-xs md:text-sm font-bold px-1 sm:px-1.5 py-0.5 rounded">
                   -{discount}%
                 </span>
               )}
@@ -86,7 +86,7 @@ function FeaturedInfoCard({
             {primaryButtonText && (
               <button
                 onClick={primaryButtonAction}
-                className="bg-secondary-200 hover:bg-secondary-300 font-display text-primary text-[10px] sm:text-xs md:text-sm font-bold px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors"
+                className="bg-secondary/80 hover:bg-secondary font-display text-secondary-700 text-[10px] sm:text-xs md:text-sm font-bold px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors"
               >
                 {primaryButtonText}
               </button>
@@ -94,7 +94,7 @@ function FeaturedInfoCard({
             {secondaryButtonText && (
               <button
                 onClick={secondaryButtonAction}
-                className="bg-white/10 hover:bg-white/20 text-white font-display text-[10px] sm:text-xs md:text-sm font-medium px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors backdrop-blur-sm border border-white/10"
+                className="bg-primary-600/40 hover:bg-primary-500/40 text-white/60 font-display text-[10px] sm:text-xs md:text-sm font-medium px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors"
               >
                 {secondaryButtonText}
               </button>
@@ -109,4 +109,4 @@ function FeaturedInfoCard({
   )
 }
 
-export default FeaturedInfoCard
+export default memo(FeaturedInfoCard)
