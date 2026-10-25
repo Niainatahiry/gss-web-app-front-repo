@@ -361,7 +361,7 @@ function Hero() {
               <div className="absolute top-[64%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
                 <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full sm:w-full">
 
-                  <div className="px-6 xl:px-0 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-start overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="px-6 xl:px-0 py-1 -my-1 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-start overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                     {slide.games.map(game => (
                       <HeroGameCard key={game.id} {...game} />
                     ))}

@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { ArrowRight } from 'lucide-react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 const popularGamesData = [
   {
@@ -183,24 +184,28 @@ function PopularGames() {
   return (
     <div ref={sectionRef} className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
+      <div className="mb-4 sm:mb-5 md:mb-6">
         <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
-          Populaires en ce moment
+          <a
+            href="/popular"
+            aria-label="Voir tous les jeux populaires"
+            className="group inline-block"
+          >
+            Populaires en ce moment
+            <span className="ml-2 md:ml-3 inline-flex align-middle p-1.5 text-white/50 group-hover:text-white group-focus-visible:text-white transition-colors">
+              <FontAwesomeIcon
+                icon={faAngleRight}
+                className="text-xl sm:text-2xl md:text-4xl transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1"
+              />
+            </span>
+          </a>
         </h2>
-        <a 
-          href="/popular" 
-          className="flex items-center gap-1 sm:gap-1.5 text-primary-300 hover:text-primary-100 transition-colors group"
-        >
-          <span className="text-xs sm:text-sm font-medium">Voir tout</span>
-          <ArrowRight size={14} className="sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-x-1" />
-        </a>
       </div>
-
       {/* md+ : Two-column grid with Featured + Sidebar */}
       <div className="hidden md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_340px] gap-4">
         
         {/* Left: Featured — h-full to match sidebar height */}
-        <div className="relative rounded-xl overflow-hidden group h-full">
+        <div className="relative rounded-card overflow-hidden group h-full shadow-e3 ring-1 ring-white/10">
           <img
             src={activeGame.landscapeImage}
             alt={activeGame.productName}
@@ -262,7 +267,7 @@ function PopularGames() {
               ref={(el) => { cardRefs.current[index] = el }}
               data-index={index}
               onClick={() => handleGameSelect(index)}
-              className={`relative flex-shrink-0 w-[75vw] rounded-2xl overflow-hidden snap-center cursor-pointer transition-all duration-300 ${
+              className={`relative flex-shrink-0 w-[75vw] rounded-card overflow-hidden snap-center cursor-pointer transition-all duration-300 shadow-e3 ring-1 ring-white/10 ${
                 index === activeIndex 
                   ? 'scale-100 opacity-100' 
                   : 'scale-95 opacity-60'
