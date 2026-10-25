@@ -5,13 +5,17 @@ import ShoppingCart from '../ui/ShoppingCart'
 import UserAvatar from '../ui/UserAvatar'
 import { Search, Menu, X, User } from 'lucide-react'
 import BrowseDropdown from '../ui/BrowseDropdown'
-import { Link } from 'react-router-dom'
+import Button from '../ui/Button'
+import IconButton from '../ui/IconButton'
+import { Link, useNavigate } from 'react-router-dom'
 import { pauseHeroAutoplay, resumeHeroAutoplay } from '../../utils/heroAutoplay'
 
 function Header() {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  
+  const [searchQuery, setSearchQuery] = useState('')
+  const navigate = useNavigate()
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const user = {
     username: 'John Doe',
@@ -21,6 +25,17 @@ function Header() {
   const handleLogout = () => {
     setIsLoggedIn(false)
     setIsUserMenuOpen(false)
+  }
+
+  const handleSearch = (event) => {
+    event.preventDefault()
+    const query = searchQuery.trim()
+    navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search')
+  }
+
+  const handleMobileSearch = (event) => {
+    handleSearch(event)
+    setIsNavMenuOpen(false)
   }
 
   const navLinks = [
@@ -43,16 +58,16 @@ function Header() {
     <div className="flex items-center gap-4 shrink-0">
 
       {/* Mobile hamburger */}
-      <button
+      <IconButton
         onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
-        className="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-lg text-primary-100 hover:bg-primary-600 transition-colors cursor-pointer"
+        className="lg:hidden w-9 h-9"
         aria-label="Menu navigation"
       >
         {isNavMenuOpen
           ? <X size={18} strokeWidth={2} />
           : <Menu size={18} strokeWidth={2} />
         }
-      </button>
+      </IconButton>
 
       <Link to="/" className="logo-container shrink-0">
         <img
@@ -71,13 +86,20 @@ function Header() {
     </div>
 
 {/* Search */}
-<div className="hidden lg:flex flex-1 justify-center px-12">
+<form
+  onSubmit={handleSearch}
+  role="search"
+  className="hidden lg:flex flex-1 justify-center px-12"
+>
   <div className="relative w-full max-w-xl flex items-center">
 
     {/* Search input — off-white/cream background */}
     <input
       type="text"
+      value={searchQuery}
+      onChange={(event) => setSearchQuery(event.target.value)}
       placeholder="Rechercher un jeu..."
+      aria-label="Rechercher un jeu"
       className="
         w-full
         h-14
@@ -95,29 +117,20 @@ function Header() {
     />
 
     {/* Search button — bg-secondary on the right */}
-    <button
+    <Button
       type="submit"
-      className="
-        h-14
-        px-6
-        rounded-r-full
-        bg-secondary/80
-        hover:bg-secondary
-        text-secondary-700
-        font-medium
-        flex items-center gap-2
-        transition-colors
-        shrink-0
-      "
+      shape="none"
+      aria-label="Rechercher"
+      className="h-14 px-6 shrink-0 rounded-r-full"
     >
       <Search
         size={18}
         strokeWidth={2}
       />
-    </button>
+    </Button>
 
   </div>
-    </div>
+</form>
 
 
     {/* Right side */}
@@ -142,7 +155,7 @@ function Header() {
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-primary-600 rounded-lg border border-primary-400 shadow-xl overflow-hidden z-50">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-primary-600 rounded-card border border-primary-400 shadow-e4 overflow-hidden z-50">
                 <div className="py-1">
 
                   <a
@@ -168,12 +181,14 @@ function Header() {
 
                   <div className="border-t border-primary-400 my-1" />
 
-                  <button
+                  <Button
+                    variant="ghost"
+                    shape="none"
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-primary-500 transition-colors cursor-pointer"
+                    className="w-full justify-start rounded-none px-4 py-2.5 text-sm text-red-400 hover:bg-primary-500 hover:text-red-400"
                   >
                     Se déconnecter
-                  </button>
+                  </Button>
 
                 </div>
               </div>
@@ -181,13 +196,13 @@ function Header() {
 
           </div>
         ) : (
-          <button
+          <IconButton
             onClick={() => setIsLoggedIn(true)}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-primary-100 hover:bg-primary-600 transition-all active:scale-95 cursor-pointer"
+            className="w-9 h-9"
             aria-label="Se connecter"
           >
             <User size={18} strokeWidth={2} />
-          </button>
+          </IconButton>
         )}
       </div>
 
@@ -203,14 +218,14 @@ function Header() {
 
     <a
       href="#"
-      className="text-base font-medium text-primary-100 hover:text-secondary px-4 py-2 transition-colors rounded-lg hover:bg-primary-600/50"
+      className="text-base font-medium text-primary-100 hover:text-secondary px-4 py-2 transition-colors rounded-control hover:bg-primary-600/50"
     >
       Recommandations
     </a>
 
     <a
       href="#"
-      className="text-base font-medium text-primary-100 hover:text-secondary px-4 py-2 transition-colors rounded-lg hover:bg-primary-600/50"
+      className="text-base font-medium text-primary-100 hover:text-secondary px-4 py-2 transition-colors rounded-control hover:bg-primary-600/50"
     >
       Genres
     </a>
@@ -220,9 +235,23 @@ function Header() {
 
   {/* ==================== MOBILE NAVIGATION ==================== */}
   {isNavMenuOpen && (
-    <div className="lg:hidden absolute top-full left-0 right-0 bg-primary-700/95 backdrop-blur-xl border-b border-primary-100/10 shadow-2xl">
+    <div className="lg:hidden absolute top-full left-0 right-0 bg-primary-700/95 backdrop-blur-xl border-b border-primary-100/10 shadow-e4">
 
       <div className="px-4 py-6 font-body">
+
+        <form onSubmit={handleMobileSearch} role="search" className="mb-4 flex items-center gap-2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Rechercher un jeu..."
+            aria-label="Rechercher un jeu"
+            className="h-11 flex-1 rounded-control border border-white/15 bg-white/10 px-4 text-sm text-white outline-none transition-colors placeholder:text-primary-200/60 focus:border-white/30"
+          />
+          <Button type="submit" icon aria-label="Rechercher">
+            <Search size={18} strokeWidth={2} />
+          </Button>
+        </form>
 
         <nav className="flex flex-col gap-2">
 
@@ -231,7 +260,7 @@ function Header() {
               key={link.label}
               href={link.href}
               onClick={() => setIsNavMenuOpen(false)}
-              className="text-lg font-medium text-primary-100 hover:text-primary-100/80 px-3 py-2 transition-colors rounded-lg hover:bg-primary-600"
+              className="text-lg font-medium text-primary-100 hover:text-primary-100/80 px-3 py-2 transition-colors rounded-control hover:bg-primary-600"
             >
               {link.label}
             </a>
