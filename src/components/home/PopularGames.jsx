@@ -72,11 +72,12 @@ const popularGamesData = [
   }
 ]
 
-const TIMER_DURATION = 5000
+const TIMER_DURATION = 7000
 
 function PopularGames() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [userInitiated, setUserInitiated] = useState(false)
+  const [scrollToActive, setScrollToActive] = useState(false)
+  const [timerResetKey, setTimerResetKey] = useState(0)
   const [isSectionVisible, setIsSectionVisible] = useState(false)
   const [isTabVisible, setIsTabVisible] = useState(() => !document.hidden)
 
@@ -107,28 +108,27 @@ function PopularGames() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
 
-  // Desktop auto-rotation — one timeout per cycle, progress is pure CSS.
+  // Auto-rotation — one timeout per cycle, progress is pure CSS.
   useEffect(() => {
     if (!isSectionVisible || !isTabVisible) return undefined
-    if (window.innerWidth < 768) return undefined
 
     const timeoutId = setTimeout(() => {
-      setUserInitiated(false)
+      if (window.innerWidth < 1024) setScrollToActive(true)
       setActiveIndex(prev => (prev + 1) % popularGamesData.length)
     }, TIMER_DURATION)
 
     return () => clearTimeout(timeoutId)
-  }, [activeIndex, isSectionVisible, isTabVisible])
+  }, [activeIndex, timerResetKey, isSectionVisible, isTabVisible])
 
-  // Auto-scroll ONLY when user clicked (not timer)
+  // Scroll the active card into view in carousel mode (< lg), for clicks and auto-rotation
   useEffect(() => {
-    if (!userInitiated) return
+    if (!scrollToActive) return
 
     const card = cardRefs.current[activeIndex]
     const container = scrollContainerRef.current
     if (!card || !container) return
 
-    const isMobile = window.innerWidth < 768
+    const isMobile = window.innerWidth < 1024
     if (!isMobile) return
 
     card.scrollIntoView({
@@ -136,39 +136,63 @@ function PopularGames() {
       block: 'nearest',
       inline: 'center',
     })
-  }, [activeIndex, userInitiated])
+  }, [activeIndex, scrollToActive])
 
-  // Mobile scroll tracking — IntersectionObserver
+  // Carousel tracking — pick the card closest to the container's center.
+  // (Previous IntersectionObserver-based version accepted every card >= 60%
+  // visible, so with the new capped card widths two cards could qualify and
+  // the last processed one won, shifting the active index by +/-1.)
   useEffect(() => {
     const container = scrollContainerRef.current
-    if (!container) return
+    if (!container) return undefined
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.dataset.index)
-            setUserInitiated(false)
-            setActiveIndex(index)
-          }
-        })
-      },
-      {
-        root: container,
-        threshold: 0.6,
+    let frameId = 0
+
+    const updateActiveIndex = () => {
+      frameId = 0
+      if (!container.clientWidth) return
+
+      const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2
+
+      let closestIndex = null
+      let closestDistance = Infinity
+
+      cardRefs.current.forEach((card, index) => {
+        if (!card) return
+        const rect = card.getBoundingClientRect()
+        const distance = Math.abs(rect.left + rect.width / 2 - containerCenter)
+        if (distance < closestDistance) {
+          closestDistance = distance
+          closestIndex = index
+        }
+      })
+
+      setScrollToActive(false)
+      if (closestIndex !== null) {
+        setActiveIndex(prev => (prev === closestIndex ? prev : closestIndex))
       }
-    )
+    }
 
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card)
-    })
+    const handleScroll = () => {
+      if (frameId) return
+      frameId = requestAnimationFrame(updateActiveIndex)
+    }
 
-    return () => observer.disconnect()
+    updateActiveIndex()
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleScroll)
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+      if (frameId) cancelAnimationFrame(frameId)
+    }
   }, [])
 
   const handleGameSelect = useCallback((index) => {
-    setUserInitiated(true)
+    if (window.innerWidth < 1024) setScrollToActive(true)
     setActiveIndex(index)
+    setTimerResetKey(prev => prev + 1)
   }, [])
 
   const handleBuy = useCallback(() => {
@@ -185,7 +209,7 @@ function PopularGames() {
     <div ref={sectionRef} className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
       <div className="mb-4 sm:mb-5 md:mb-6">
-        <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
+        <h2 className="font-heading text-3xl sm:text-3xl md:text-5xl text-white/80">
           <a
             href="/popular"
             aria-label="Voir tous les jeux populaires"
@@ -201,8 +225,8 @@ function PopularGames() {
           </a>
         </h2>
       </div>
-      {/* md+ : Two-column grid with Featured + Sidebar */}
-      <div className="hidden md:grid md:grid-cols-[1fr_280px] lg:grid-cols-[1fr_340px] gap-4">
+      {/* lg+ : Two-column grid with Featured + Sidebar */}
+      <div className="hidden lg:grid lg:grid-cols-[1fr_340px] gap-4">
         
         {/* Left: Featured — h-full to match sidebar height */}
         <div className="relative rounded-card overflow-hidden group h-full shadow-e3 ring-1 ring-white/10">
@@ -244,19 +268,20 @@ function PopularGames() {
               isActive={index === activeIndex}
               onSelect={handleGameSelect}
               progressDuration={TIMER_DURATION}
+              progressKey={timerResetKey}
             />
           ))}
         </div>
       </div>
 
-      {/* < md : Horizontal scrollable portrait cards */}
+      {/* < lg : Horizontal scrollable portrait cards */}
       <div 
         ref={scrollContainerRef}
-        className="md:hidden overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 snap-x snap-mandatory"
+        className="lg:hidden overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 snap-x snap-mandatory"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style>{`
-          .md\\:hidden::-webkit-scrollbar {
+          .lg\\:hidden::-webkit-scrollbar {
             display: none;
           }
         `}</style>
@@ -265,9 +290,8 @@ function PopularGames() {
             <div
               key={game.id}
               ref={(el) => { cardRefs.current[index] = el }}
-              data-index={index}
               onClick={() => handleGameSelect(index)}
-              className={`relative flex-shrink-0 w-[75vw] rounded-card overflow-hidden snap-center cursor-pointer transition-all duration-300 shadow-e3 ring-1 ring-white/10 ${
+              className={`relative flex-shrink-0 w-[75vw] max-w-[320px] md:max-w-[420px] rounded-card overflow-hidden snap-center cursor-pointer transition-all duration-300 shadow-e3 ring-1 ring-white/10 ${
                 index === activeIndex 
                   ? 'scale-100 opacity-100' 
                   : 'scale-95 opacity-60'
@@ -316,7 +340,7 @@ function PopularGames() {
         </div>
       </div>
       {/* Mobile dots indicator — clickable */}
-      <div className="md:hidden flex justify-center gap-2 mt-4">
+      <div className="lg:hidden flex justify-center gap-2 mt-4">
         {popularGamesData.map((_, index) => (
           <button
             key={index}

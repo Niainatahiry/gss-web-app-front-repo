@@ -8,7 +8,7 @@ function BestSellers() {
     <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       {/* Section Header */}
       <div className="mb-4 sm:mb-5 md:mb-6">
-        <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
+        <h2 className="font-heading text-3xl sm:text-3xl md:text-5xl text-white/80">
           <a
             href="/popular"
             aria-label="Voir toutes les meilleures ventes"

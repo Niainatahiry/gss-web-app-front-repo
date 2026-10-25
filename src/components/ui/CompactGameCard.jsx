@@ -11,7 +11,8 @@ function CompactGameCard({
   currency,
   isActive,
   onSelect,
-  progressDuration = 5000
+  progressDuration = 5000,
+  progressKey = 0
 }) {
   return (
     <button
@@ -61,9 +62,9 @@ function CompactGameCard({
         className={`shrink-0 transition-all ${isActive ? 'text-white opacity-100' : 'text-white/30 opacity-0'}`} 
       />
 
-      {/* Timer progress bar — pure CSS, restarts when this card becomes active */}
+      {/* Timer progress bar — pure CSS, restarts when this card becomes active or the timer is reset */}
       {isActive && (
-        <div className="absolute bottom-0 left-0 right-0 h-[0.12vw] bg-white/10">
+        <div key={progressKey} className="absolute bottom-0 left-0 right-0 h-[0.12vw] bg-white/10">
           <div
             className="h-full origin-left bg-secondary-100 rounded-b"
             style={{ animation: `progress-fill ${progressDuration}ms linear forwards` }}
