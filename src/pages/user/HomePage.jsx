@@ -1,6 +1,4 @@
-import React from 'react'
 import Hero from '../../components/home/Hero'
-import ProductCard from '../../components/ui/ProductCard'
 import BestSellers from '../../components/home/BestSellers'
 import Recommendations from '../../components/home/Recommendations'
 import PopularGames from '../../components/home/PopularGames'
@@ -11,7 +9,7 @@ import SelectPlatformsSection from '../../components/home/SelectPlatformsSection
 function HomePage() {
   return (
     <div >
-      <section className="pb-128 sm:pb-88 md:pb-106 lg:pb-24 xl:pb-72">
+      <section className="pb-8 lg:pb-12">
         <Hero />
       </section>
 

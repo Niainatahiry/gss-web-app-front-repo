@@ -22,12 +22,15 @@ function HeroGameCard({
     ? Math.round((1 - salePrice / originalPrice) * 100)
     : 0)
 
+  /* md/lg: one third of the parent row (which matches the promotion
+     description width) minus the two `md:gap-4` gaps. Keep 2rem in sync
+     with that gap. */
   return (
     <Card
       interactive
       radius="md"
       onClick={handleClick}
-      className="group w-48 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 @container overflow-hidden"
+      className="group w-36 sm:w-40 md:w-[calc((100%_-_2rem)/3)] xl:w-44 2xl:w-54 shrink-0 @container overflow-hidden"
     >
       {/* Game Image — Portrait, never covered by the panel.
           No radius/shadow/ring of its own: the Card supplies the whole

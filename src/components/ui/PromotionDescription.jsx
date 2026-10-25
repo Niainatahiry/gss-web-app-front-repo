@@ -9,38 +9,35 @@ function PromotionDescription({
   description = "la meilleure licence automobile du moment. Achetez un compte Steam neuf avec le jeu à un prix imbattable."
 }) {
   return (
-    <div className="flex flex-col w-full lg:max-w-sm  xl:max-w-sm 2xl:max-w-sm">
-      
-      {/* 
-        md: horizontal avec wrap si pas assez de place
-        xl & 2xl: vertical (colonne)
-      */}
-      <div className="items-start md:items-start xl:justify-start px-6 sm:px-28 md:px-8 lg:px-0 flex flex-col sm:flex-row lg:flex-col xl:flex-col gap-8 md:gap-24 lg:gap-3 sm:flex-no-wrap xl:flex-nowrap 2xl:flex-nowrap xl:gap-1.5 2xl:gap-1.5">
-        
-        {/* TOP / LEFT — Date + Badge */}
-        <div className="flex flex-col gap-1 xl:gap-1.5 2xl:gap-1.5 shrink-0 w-fit">
-          {/* Date — width matches its content */}
-          <div className="font-body text-xs xl:text-sm 2xl:text-sm text-primary-100/80 uppercase tracking-wider whitespace-nowrap">
+    <div className="flex w-full flex-col md:max-w-2xl xl:max-w-sm">
+
+      <div className="flex flex-col gap-3 md:flex-row md:items-start md:gap-8 xl:flex-col xl:gap-3">
+
+        {/* Date + Badge — inline on stacked layouts, stacked from md.
+            Keeps the mobile promo short instead of a 80px badge on its own row. */}
+        <div className="flex w-fit flex-wrap items-center gap-3 md:shrink-0 md:flex-col md:items-start md:gap-1.5">
+          <div className="font-body text-xs text-primary-100/80 uppercase tracking-wider whitespace-nowrap xl:text-sm">
             Jusqu'au <span className="text-secondary">{endDate}</span><span className="hidden sm:inline"> profitez de</span> :
           </div>
 
-          <div className="bg-secondary h-20 sm:h-30 justify-center items-center rounded-sm px-4 py-3 sm:px-6 sm:py-5 xl:px-8 xl:py-6 2xl:px-10 2xl:py-8 flex">
-            <span className="font-display text-3xl sm:text-5xl xl:text-6xl 2xl:text-7xl font-black text-black/90">
+          <div className="bg-secondary flex h-16 items-center justify-center rounded-sm px-4 py-2 sm:h-20 md:h-30 md:w-full md:px-6 md:py-5 xl:h-32 xl:px-8 xl:py-6 2xl:h-36 2xl:px-10 2xl:py-8">
+            <span className="font-display text-3xl font-black text-black/90 sm:text-4xl md:text-5xl xl:text-6xl 2xl:text-7xl">
               -{discount}%
             </span>
           </div>
         </div>
-        {/* BOTTOM / RIGHT — Description + CTA */}
-        <div className=" flex flex-col items-start sm:items-start gap-2 sm:pt-3 md:pt-4 lg:max-w-xs xl:max-w-sm 2xl:max-w-sm xl:gap-1.5 2xl:gap-1.5 ">
-          <p className="font-body text-left sm:px-0 sm:text-left md:text-left lg:text-left xl:text-left 2xl:text-left text-sm xl:text-base 2xl:text-base text-primary-100 leading-relaxed mt-2 md:mt-0 xl:mt-0 2xl:mt-4 sm:line-clamp-5">
+
+        {/* Description + CTA */}
+        <div className="flex min-w-0 flex-col items-start gap-2 md:max-w-sm md:flex-1 xl:flex-none">
+          <p className="font-body text-left text-sm leading-relaxed text-primary-100 line-clamp-2 md:line-clamp-none xl:text-base">
             Économisez jusqu'à <span className="font-bold text-secondary">-{maxSavings}%</span> sur <span className="font-bold text-primary-100">{gameName}</span> {description}
           </p>
 
-          <Button className="w-fit mt-2 xl:mt-3 2xl:mt-3.5 gap-2 xl:gap-3 2xl:gap-4 h-auto px-6 py-3 text-xs xl:px-6 xl:py-2.5 xl:text-sm 2xl:px-8 2xl:py-3 2xl:text-sm uppercase tracking-wide">
+          <Button className="mt-1 h-auto w-fit gap-2 px-6 py-3 text-xs uppercase tracking-wide md:mt-2 xl:gap-3 xl:px-6 xl:py-2.5 xl:text-sm 2xl:gap-4 2xl:px-8 2xl:py-3">
             Voir l'offre 
-            <div className="inline-block w-[18px] h-[18px] xl:w-5 xl:h-5 2xl:w-6 2xl:h-6">
-              <SendHorizontal className="w-full h-full" />
-            </div>
+            <span className="inline-block h-[18px] w-[18px] xl:h-5 xl:w-5 2xl:h-6 2xl:w-6">
+              <SendHorizontal className="h-full w-full" />
+            </span>
           </Button>
         </div>
 

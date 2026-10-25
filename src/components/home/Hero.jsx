@@ -4,6 +4,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import HeroGameCard from '../ui/HeroGameCard'
 import PromotionDescription from '../ui/PromotionDescription'
 import { onHeroAutoplayPause, onHeroAutoplayResume } from '../../utils/heroAutoplay'
+import { formatAriary } from '../../utils/formatPrice'
 
 const STEAM_LOGO = "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg"
 
@@ -153,6 +154,7 @@ function Hero() {
   const isResettingRef = useRef(false)
   const resetTimerRef = useRef(null)
   const isAutoplayPausedRef = useRef(false)
+  const touchStartRef = useRef(null)
 
   const extendedSlides = hasMultipleSlides
     ? [...slidesData, slidesData[0]]
@@ -267,6 +269,63 @@ function Hero() {
     slideIndexRef.current = prev
   }, [hasMultipleSlides, totalSlides])
 
+  /* Jump straight to a slide (dot navigation). */
+  const goToSlide = useCallback(
+    (index) => {
+      if (!hasMultipleSlides || isResettingRef.current) return
+      if (index === activeSlideIndex && slideIndexRef.current < totalSlides) return
+
+      clearTimeout(resetTimerRef.current)
+
+      /* On the clone after a wrap: snap to the target without animating. */
+      if (slideIndexRef.current >= totalSlides) {
+        isResettingRef.current = true
+        setIsTransitioning(false)
+        setSlideIndex(index)
+        slideIndexRef.current = index
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setIsTransitioning(true)
+            isResettingRef.current = false
+          })
+        })
+        return
+      }
+
+      setIsTransitioning(true)
+      setSlideIndex(index)
+      slideIndexRef.current = index
+    },
+    [activeSlideIndex, hasMultipleSlides, totalSlides]
+  )
+
+  /* Swipe the hero to change slides. The cards no longer scroll, so there is
+     no inner horizontal gesture to protect. */
+  const handleTouchStart = (event) => {
+    const touch = event.touches[0]
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY }
+  }
+
+  const handleTouchEnd = (event) => {
+    const start = touchStartRef.current
+    touchStartRef.current = null
+    if (!start) return
+
+    const touch = event.changedTouches[0]
+    const deltaX = touch.clientX - start.x
+    const deltaY = touch.clientY - start.y
+
+    /* Ignore taps and mostly vertical gestures (page scrolling). */
+    if (Math.abs(deltaX) < 40 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return
+
+    if (deltaX < 0) {
+      nextSlide()
+    } else {
+      prevSlide()
+    }
+  }
+
   /* Auto-advance. Skipped while the pointer sits over the header
      (see utils/heroAutoplay). */
   useEffect(() => {
@@ -297,10 +356,17 @@ function Hero() {
   }, [])
 
   return (
-    <section className="relative w-full h-125 md:h-150 lg:h-175">
+    <section
+      className="relative w-full bg-tertiary-550"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Background strip — slides horizontally. `willChange` is only set while
-          a transition runs so the wide strip isn't kept as a layer when idle. */}
-      <div className="absolute inset-0 overflow-hidden bg-primary-700 [contain:strict]">
+          a transition runs so the wide strip isn't kept as a layer when idle.
+          On md+ the artwork is capped at 600px: the section height follows the
+          content, so letting the image fill it would zoom and crop the artwork
+          to a sliver. Below the cap, the page colour takes over. */}
+      <div className="absolute inset-x-0 top-0 h-full overflow-hidden bg-primary-700 [contain:strict] md:h-[600px] xl:h-full">
         <div
           className="absolute inset-0 flex"
           style={{
@@ -326,51 +392,108 @@ function Hero() {
         {/* Scrim — darkens bright artwork so the white text stays readable */}
         <div className="absolute inset-0 bg-tertiary-700/35" />
         <div className="absolute inset-0 bg-linear-to-r from-black/55 via-black/20 to-transparent" />
+
+        {/* Bottom fade — anchored to the artwork's bottom edge, so it ends
+            exactly where the page colour takes over below the 600px cap. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-b from-transparent to-tertiary-550 sm:h-20 md:h-56 xl:h-64" />
       </div>
 
-      {/* Bottom fade — artwork dissolves into the page background (tertiary-500)
-          so the hero has no hard edge before the next section */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 sm:h-48 lg:h-64 bg-linear-to-b from-transparent to-tertiary-550" />
-
-      {/* Content layers — short 250 ms fade in place while the background
-          slides, so text and cards don't pop between slides. */}
-      <div className="relative z-10 h-full">
+      {/* Content layers — all slides share one grid cell so the tallest slide
+          defines the height, then they cross-fade in place. */}
+      <div className="relative z-10 grid">
         {slidesData.map((slide, index) => {
           const isActive = index === activeSlideIndex
+          const bestOffer = slide.games.reduce(
+            (best, game) => (game.salePrice < best.salePrice ? game : best),
+            slide.games[0]
+          )
 
           return (
             <div
               key={slide.id}
               aria-hidden={!isActive}
-              className={`absolute inset-0 pt-32 flex flex-col items-center justify-center pb-36 px-4 sm:px-6 lg:px-8 transition-opacity ease-in-out ${
+              className={`[grid-area:1/1] min-w-0 transition-opacity ease-in-out ${
                 isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'
               }`}
               style={{ transitionDuration: `${CONTENT_FADE_DURATION}ms` }}
             >
-              <div className="w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
-                <div className="mb-6 xl:mb-7 2xl:mb-8">
-                  <p className="font-heading text-3xl text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-5xl 2xl:text-8xl font-black text-white uppercase tracking-wider mt-1.5 xl:mt-2 2xl:mt-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
-                    {slide.subtitle}
-                  </p>
-                  <h2 className="font-body text-lg text-center md:text-center lg:text-left xl:text-left 2xl:text-left md:text-lg 2xl:text-xl font-bold text-white uppercase tracking-wide" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}>
-                    {slide.title}
+              {/* < md — simplified: artwork + title + discount/price only. */}
+              <div className="flex min-h-80 flex-col px-4 pt-28 pb-8 sm:min-h-88 sm:px-6 sm:pt-32 sm:pb-10 md:hidden">
+                <p
+                  className="font-body text-[11px] font-semibold uppercase tracking-[0.2em] text-secondary"
+                  style={{ textShadow: '0 2px 8px rgba(0,0,0,0.35)' }}
+                >
+                  {slide.subtitle}
+                </p>
+
+                <div className="mt-1 flex flex-col items-start gap-2">
+                  <h2
+                    className="max-w-md font-heading text-4xl leading-none text-white uppercase sm:text-5xl"
+                    style={{ textShadow: '0 2px 8px rgba(0,0,0,0.35)' }}
+                  >
+                    {slide.promotion.gameName}
                   </h2>
+                  <span className="rounded-sm bg-secondary px-2.5 py-1 font-body text-sm font-black text-secondary-700">
+                    -{bestOffer.discount}%
+                  </span>
+                </div>
+
+                {/* Price card — bottom-right of the hero, glass surface like the header */}
+                <div className="mt-auto flex w-full justify-end pt-6">
+                  <div className="rounded-card px-4 py-3 backdrop-blur-xl ring-1 ring-white/10">
+                    <p className="font-body text-[10px] uppercase tracking-[0.15em] text-white/60">
+                      À partir de
+                    </p>
+                    <p className="font-display text-2xl font-bold leading-tight text-white">
+                      {formatAriary(bestOffer.salePrice)}{' '}
+                      <span className="font-body text-sm font-semibold">
+                        {bestOffer.currency}
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="absolute top-[64%] left-1/2 -translate-x-1/2 z-20 w-full max-w-7xl md:px-16 xl:px-24 2xl:px-0">
-                <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-12 justify-center lg:justify-start md:w-full sm:w-full">
-
-                  <div className="px-6 xl:px-0 py-1 -my-1 flex gap-4 flex-1 justify-start sm:justify-center center lg:justify-start overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                    {slide.games.map(game => (
-                      <HeroGameCard key={game.id} {...game} />
-                    ))}
+              {/* ≥ md — centered, stacked composition: title, promo above the
+                  three cards, all fully visible (no carousel scrolling). The
+                  side-by-side desktop row returns at xl. */}
+              <div className="hidden min-w-0 flex-col px-6 pt-40 pb-10 md:flex md:min-h-175 md:justify-center md:px-8 md:pt-48 xl:justify-between">
+                <div className="mx-auto w-full max-w-7xl md:px-12 lg:px-20 xl:px-24 2xl:px-0">
+                  <div className="text-center xl:text-left">
+                    <p
+                      className="font-heading text-3xl font-black text-white uppercase tracking-wider text-balance md:text-5xl 2xl:text-8xl"
+                      style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}
+                    >
+                      {slide.subtitle}
+                    </p>
+                    <h2
+                      className="font-body text-lg font-bold text-white uppercase tracking-wide text-balance 2xl:text-xl"
+                      style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.3)' }}
+                    >
+                      {slide.title}
+                    </h2>
                   </div>
+                </div>
 
-                  <div className="shrink-0 bg">
-                    <PromotionDescription {...slide.promotion} />
+                <div className="mx-auto mt-6 w-full max-w-7xl md:px-12 md:mt-8 lg:px-20 xl:px-24 2xl:px-0">
+                  <div className="flex flex-col items-center gap-8 xl:flex-row xl:items-end xl:gap-10">
+
+                    {/* md/lg: the row is exactly as wide as the promotion
+                        block, so three cards + two gaps span it edge to edge.
+                        (Card width is derived from this in HeroGameCard.) */}
+                    <div
+                      className="flex w-full justify-center gap-3 md:max-w-2xl md:gap-4 xl:min-w-0 xl:max-w-none xl:flex-1 xl:justify-start"
+                    >
+                      {slide.games.map(game => (
+                        <HeroGameCard key={game.id} {...game} />
+                      ))}
+                    </div>
+
+                    <div className="w-full shrink-0 md:max-w-2xl xl:w-auto">
+                      <PromotionDescription {...slide.promotion} />
+                    </div>
+
                   </div>
-
                 </div>
               </div>
             </div>
@@ -378,15 +501,37 @@ function Hero() {
         })}
       </div>
 
-      
-
+      {/* Mobile: dots. Tablet/desktop: the previous side arrows. */}
       {hasMultipleSlides && (
         <>
+          <div
+            className="relative z-20 flex justify-center gap-2 pb-6 md:hidden"
+            role="group"
+            aria-label="Navigation des promotions"
+          >
+            {slidesData.map((slide, index) => {
+              const isActive = index === activeSlideIndex
+
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => goToSlide(index)}
+                  aria-label={`Aller à la promotion ${index + 1}`}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`h-2 cursor-pointer rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-550 ${
+                    isActive ? 'w-6 bg-white' : 'w-2 bg-white/30 hover:bg-white/60'
+                  }`}
+                />
+              )
+            })}
+          </div>
+
           <button
             type="button"
             aria-label="Slide précédent"
             onClick={prevSlide}
-            className="absolute left-2 md:left-5 lg:left-8 top-1/2 -translate-y-1/2 z-30 p-2 text-white hover:text-secondary-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-x-0.5 cursor-pointer"
+            className="absolute left-1 top-1/2 z-30 hidden -translate-y-1/2 p-2 text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-x-0.5 hover:text-secondary-100 md:flex md:left-2"
           >
             <FontAwesomeIcon icon={faAngleLeft} className="text-5xl md:text-6xl" />
           </button>
@@ -394,7 +539,7 @@ function Hero() {
             type="button"
             aria-label="Slide suivant"
             onClick={nextSlide}
-            className="absolute right-2 md:right-5 lg:right-8 top-1/2 -translate-y-1/2 z-30 p-2 text-secondary hover:text-secondary-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:translate-x-0.5 cursor-pointer"
+            className="absolute right-1 top-1/2 z-30 hidden -translate-y-1/2 p-2 text-secondary drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:translate-x-0.5 hover:text-secondary-100 md:flex md:right-2"
           >
             <FontAwesomeIcon icon={faAngleRight} className="text-5xl md:text-6xl" />
           </button>
