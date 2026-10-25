@@ -67,7 +67,7 @@ function SearchFiltersDrawer({ open, onClose, children }) {
         inert={!open}
         onKeyDown={handleKeyDown}
         className={cn(
-          'fixed inset-y-0 left-0 z-[60] w-[min(320px,88vw)] overflow-y-auto overscroll-contain rounded-none border-r border-white/10 bg-tertiary-550 p-5 shadow-e4 outline-none transition-transform duration-300 ease-material',
+          'fixed inset-y-0 left-0 z-[60] w-[min(320px,88vw)] overflow-y-auto overscroll-contain rounded-none border-r border-white/10 bg-primary-700 p-5 shadow-e4 outline-none scrollbar-slim transition-transform duration-300 ease-material',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >

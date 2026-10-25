@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { SearchX } from 'lucide-react'
 import ProductCard from '../../components/ui/ProductCard'
 import Button from '../../components/ui/Button'
+import SearchInput from '../../components/ui/SearchInput'
 import SearchFilters from '../../components/search/SearchFilters'
 import SearchFiltersDrawer from '../../components/search/SearchFiltersDrawer'
 import SearchToolbar from '../../components/search/SearchToolbar'
@@ -112,9 +113,38 @@ function SearchPage() {
     setPriceMax(MAX_PRICE)
   }
 
+  // Refine the keyword without touching the local facets/sort state.
+  const submitSearch = (event) => {
+    event.preventDefault()
+
+    const next = new FormData(event.currentTarget).get('q')?.toString().trim() ?? ''
+    const params = new URLSearchParams(searchParams)
+
+    if (next) {
+      params.set('q', next)
+    } else {
+      params.delete('q')
+    }
+
+    setSearchParams(params)
+  }
+
+  const clearQuery = () => {
+    const params = new URLSearchParams(searchParams)
+    params.delete('q')
+    setSearchParams(params, { replace: true })
+  }
+
+  // "Tout effacer" next to the filter chips: clears every chip (keyword,
+  // facets, price) but keeps the chosen sort order — sorting is not a chip.
+  const clearAllFilters = () => {
+    resetFilters()
+    clearQuery()
+  }
+
   const removeFilter = (filter) => {
     if (filter.key === 'query') {
-      setSearchParams({}, { replace: true })
+      clearQuery()
       return
     }
 
@@ -129,7 +159,7 @@ function SearchPage() {
   const resetAll = () => {
     resetFilters()
     setSort('relevance')
-    setSearchParams({}, { replace: true })
+    clearQuery()
   }
 
   const closeFilters = useCallback(() => setFiltersOpen(false), [])
@@ -138,20 +168,20 @@ function SearchPage() {
     <div className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
       <nav
         aria-label="Fil d'Ariane"
-        className="mb-3 flex items-center gap-2 font-body text-xs text-primary-300"
+        className="mb-3 flex items-center gap-2 font-body text-xs text-white/40"
       >
         <Link to="/" className="transition-colors hover:text-white">
           Accueil
         </Link>
         <span aria-hidden="true">/</span>
-        <span className="text-primary-200">Recherche</span>
+        <span className="text-white/70">Recherche</span>
       </nav>
 
       <header className="mb-6 md:mb-8">
-        <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl text-white/80">
+        <h1 className="font-heading text-3xl sm:text-3xl md:text-5xl text-white/80">
           {query ? 'Résultats de recherche' : 'Tous les produits'}
         </h1>
-        <p aria-live="polite" className="mt-1 font-body text-sm text-primary-200">
+        <p aria-live="polite" className="mt-1 font-body text-sm text-white/50">
           {query ? (
             <>
               Pour « <span className="text-white/80">{query}</span> » ·{' '}
@@ -176,13 +206,21 @@ function SearchPage() {
         />
       </SearchFiltersDrawer>
 
+      <div className="mb-4 lg:hidden">
+        <SearchInput
+          key={query}
+          defaultValue={query}
+          onSubmit={submitSearch}
+        />
+      </div>
+
       <SearchToolbar
         count={results.length}
         sort={sort}
         onSortChange={setSort}
         activeFilters={activeFilters}
         onRemoveFilter={removeFilter}
-        onReset={resetFilters}
+        onReset={clearAllFilters}
         onToggleFilters={() => setFiltersOpen((open) => !open)}
         filtersOpen={filtersOpen}
       />
@@ -194,12 +232,12 @@ function SearchPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-card bg-primary-600/30 py-20 text-center ring-1 ring-white/10">
-          <SearchX size={44} className="text-white/25" />
+        <div className="flex flex-col items-center justify-center gap-6 py-20 text-center">
+          <SearchX size={72} strokeWidth={1.5} aria-hidden="true" className="text-white/20" />
 
-          <div>
-            <p className="font-body font-semibold text-white/80">Aucun résultat</p>
-            <p className="mt-1 font-body text-sm text-primary-200">
+          <div className="max-w-md">
+            <p className="font-body text-2xl font-semibold text-white/90">Aucun résultat</p>
+            <p className="mt-2 font-body text-base text-white/50">
               {query
                 ? 'Essayez avec d’autres mots-clés ou retirez des filtres.'
                 : 'Aucun produit ne correspond aux filtres sélectionnés.'}

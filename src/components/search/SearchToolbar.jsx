@@ -1,5 +1,6 @@
 import { SlidersHorizontal, X } from 'lucide-react'
 import Button from '../ui/Button'
+import Select from '../ui/Select'
 import { SORT_OPTIONS } from './searchConfig'
 
 function SearchToolbar({
@@ -17,8 +18,9 @@ function SearchToolbar({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
-            variant="outline"
+            variant="surface"
             size="sm"
+            className="text-sm"
             onClick={onToggleFilters}
             aria-expanded={filtersOpen}
             aria-controls="search-filters"
@@ -26,32 +28,29 @@ function SearchToolbar({
             <SlidersHorizontal size={15} />
             Filtres
             {activeFilters.length > 0 && (
-              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-secondary px-1 text-[11px] font-bold text-secondary-700">
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-bold text-white">
                 {activeFilters.length}
               </span>
             )}
           </Button>
 
-          <p className="font-body text-sm text-primary-200">
+          <p className="font-body text-sm text-white/50">
             <span className="font-semibold text-white/80">{count}</span>{' '}
             résultat{count > 1 ? 's' : ''}
           </p>
         </div>
 
-        <label className="flex items-center gap-2 font-body text-sm text-primary-200">
+        <div className="flex items-center gap-2 font-body text-sm text-white/50">
           <span className="hidden sm:inline">Trier par</span>
-          <select
+          <Select
+            aria-label="Trier par"
             value={sort}
-            onChange={(event) => onSortChange(event.target.value)}
-            className="h-9 cursor-pointer rounded-control border border-white/15 bg-primary-600/40 px-3 text-sm text-white outline-none transition-colors hover:border-white/25 focus:border-white/30"
-          >
-            {SORT_OPTIONS.map((option) => (
-              <option key={option.id} value={option.id} className="bg-primary-700 text-white">
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            onValueChange={onSortChange}
+            options={SORT_OPTIONS}
+            size="sm"
+            className="min-w-48"
+          />
+        </div>
       </div>
 
       {activeFilters.length > 0 && (
@@ -61,19 +60,19 @@ function SearchToolbar({
               key={`${filter.key}-${filter.value ?? 'all'}`}
               type="button"
               onClick={() => onRemoveFilter(filter)}
-              className="group inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 py-1 pl-2.5 pr-2 font-body text-xs text-primary-100 transition-colors hover:border-white/20 hover:bg-white/10"
+              className="group inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 py-1 pl-2.5 pr-2 font-body text-xs text-white/70 transition-colors hover:border-white/20 hover:bg-white/10"
             >
               {filter.label}
               <X
                 size={12}
-                className="text-primary-300 transition-colors group-hover:text-white"
+                className="text-white/40 transition-colors group-hover:text-white"
               />
             </button>
           ))}
           <button
             type="button"
             onClick={onReset}
-            className="cursor-pointer font-body text-xs text-primary-300 underline underline-offset-4 transition-colors hover:text-white"
+            className="cursor-pointer font-body text-xs text-white/50 underline underline-offset-4 transition-colors hover:text-white"
           >
             Tout effacer
           </button>
