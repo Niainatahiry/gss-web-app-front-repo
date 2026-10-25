@@ -1,5 +1,5 @@
 // src/components/ui/BrowseDropdown.jsx
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { ChevronDown, Monitor } from 'lucide-react'
 import PlaystationLogo from '../../assets/logos/consoleLogos/playstation.svg?react'
 import XboxLogo from '../../assets/logos/consoleLogos/Xbox_Logo.svg?react'
@@ -8,21 +8,20 @@ import MiniGameCard from './MiniGameCard'
 import Button from './Button'
 
 
-function BrowseDropdown() {
-  const [isOpen, setIsOpen] = useState(false)
+function BrowseDropdown({ isOpen, onOpenChange }) {
   const containerRef = useRef(null)
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setIsOpen(false)
+        onOpenChange(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [onOpenChange])
 
-  const toggleOpen = () => setIsOpen(prev => !prev)
+  const toggleOpen = () => onOpenChange(!isOpen)
 
   const platforms = [
     { name: 'PC', Icon: Monitor },
@@ -78,12 +77,12 @@ function BrowseDropdown() {
     <div 
       ref={containerRef}
       className="relative flex items-center h-full"
-      onMouseLeave={() => setIsOpen(false)}
+      onMouseLeave={() => onOpenChange(false)}
     >
       <Button
         variant="ghost"
         onClick={toggleOpen}
-        onMouseEnter={() => setIsOpen(true)}
+        onMouseEnter={() => onOpenChange(true)}
         className="px-4 py-2 text-base"
       >
         Parcourir
@@ -97,7 +96,7 @@ function BrowseDropdown() {
       {isOpen && (
         <div 
           className="fixed left-0 right-0 top-36 bg-primary border-b border-primary-100/10 shadow-e4 z-40"
-          onMouseEnter={() => setIsOpen(true)}
+          onMouseEnter={() => onOpenChange(true)}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-12 gap-8">

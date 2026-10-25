@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import logoSrc from '../../assets/logos/gss-logo-with-white-text.png'
 import logoMobile from '../../assets/logos/gss-logo-transparent-for-dark-background.png'
 import ShoppingCart from '../ui/ShoppingCart'
@@ -7,14 +7,36 @@ import { Search, Menu, X, User } from 'lucide-react'
 import BrowseDropdown from '../ui/BrowseDropdown'
 import Button from '../ui/Button'
 import IconButton from '../ui/IconButton'
-import { Link, useNavigate } from 'react-router-dom'
+import SearchInput from '../ui/SearchInput'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { pauseHeroAutoplay, resumeHeroAutoplay } from '../../utils/heroAutoplay'
+import { cn } from '../../lib/cn'
 
 function Header() {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isBrowseOpen, setIsBrowseOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const searchToggleRef = useRef(null)
   const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const isHomePage = pathname === '/'
+
+  const [isAtTop, setIsAtTop] = useState(() => window.scrollY <= 8)
+
+  /* On the home page the header floats fully transparent over the hero until
+     the page is scrolled. Other routes always keep the solid bar. */
+  useEffect(() => {
+    const updateIsAtTop = () => setIsAtTop(window.scrollY <= 8)
+
+    updateIsAtTop()
+    window.addEventListener('scroll', updateIsAtTop, { passive: true })
+    return () => window.removeEventListener('scroll', updateIsAtTop)
+  }, [pathname])
+
+  const hasOpenPanel = isBrowseOpen || isNavMenuOpen || isSearchOpen
+  const isTransparent = isHomePage && isAtTop && !hasOpenPanel
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const user = {
@@ -31,11 +53,18 @@ function Header() {
     event.preventDefault()
     const query = searchQuery.trim()
     navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search')
+    setIsSearchOpen(false)
+    setIsNavMenuOpen(false)
   }
 
-  const handleMobileSearch = (event) => {
-    handleSearch(event)
+  const toggleMobileSearch = () => {
+    setIsSearchOpen((open) => !open)
     setIsNavMenuOpen(false)
+  }
+
+  const closeMobileSearch = () => {
+    setIsSearchOpen(false)
+    searchToggleRef.current?.focus()
   }
 
   const navLinks = [
@@ -46,7 +75,11 @@ function Header() {
 
   return (
     <header
-      className="fixed w-full top-0 left-0 right-0 z-50 bg-primary-700/60 backdrop-blur-xl"
+      className={cn(
+        'fixed w-full top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter] duration-200',
+        hasOpenPanel && 'transition-none',
+        isTransparent ? 'bg-transparent' : 'bg-primary-700/60 backdrop-blur-xl'
+      )}
       onPointerEnter={pauseHeroAutoplay}
       onPointerLeave={resumeHeroAutoplay}
     >
@@ -59,7 +92,10 @@ function Header() {
 
       {/* Mobile hamburger */}
       <IconButton
-        onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
+        onClick={() => {
+          setIsNavMenuOpen(!isNavMenuOpen)
+          setIsSearchOpen(false)
+        }}
         className="lg:hidden w-9 h-9"
         aria-label="Menu navigation"
       >
@@ -89,7 +125,7 @@ function Header() {
 <form
   onSubmit={handleSearch}
   role="search"
-  className="hidden lg:flex flex-1 justify-center px-12"
+  className="group hidden lg:flex flex-1 justify-center px-12"
 >
   <div className="relative w-full max-w-xl flex items-center">
 
@@ -116,12 +152,23 @@ function Header() {
       "
     />
 
-    {/* Search button — bg-secondary on the right */}
+    {/* Search button — bg-secondary on the right.
+        shadow-none: the component elevation smudges over the cream input.
+        The background gradient is the short cream → yellow blend at the seam,
+        scoped to this button and following the input's focus colour.
+        Inset focus ring so keyboard focus never draws a black offset band. */}
     <Button
       type="submit"
       shape="none"
       aria-label="Rechercher"
-      className="h-14 px-6 shrink-0 rounded-r-full"
+      className="
+        h-14 px-6 shrink-0 rounded-r-full
+        shadow-none hover:shadow-none
+        bg-[linear-gradient(to_right,#f5f5f0,transparent_16px)]
+        group-has-[input:focus]:bg-[linear-gradient(to_right,#fff,transparent_16px)]
+        focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700
+        focus-visible:ring-offset-0
+      "
     >
       <Search
         size={18}
@@ -135,6 +182,21 @@ function Header() {
 
     {/* Right side */}
     <div className="flex items-center gap-4 font-body shrink-0">
+
+      {/* Mobile search toggle */}
+      <IconButton
+        ref={searchToggleRef}
+        onClick={toggleMobileSearch}
+        className="lg:hidden w-9 h-9"
+        aria-label={isSearchOpen ? 'Fermer la recherche' : 'Rechercher'}
+        aria-expanded={isSearchOpen}
+        aria-controls="mobile-search"
+      >
+        {isSearchOpen
+          ? <X size={18} strokeWidth={2} />
+          : <Search size={18} strokeWidth={2} />
+        }
+      </IconButton>
 
       <div className="shopping-cart">
         <ShoppingCart />
@@ -211,10 +273,33 @@ function Header() {
   </div>
 
 
-  {/* ==================== DESKTOP NAVIGATION ==================== */}
-  <nav className="hidden lg:flex h-12 items-center justify-center gap-1 font-body border-t border-primary-100/5">
+  {/* ==================== MOBILE SEARCH ==================== */}
+  {isSearchOpen && (
+    <div
+      id="mobile-search"
+      className="lg:hidden border-t border-white/5 px-4 py-3"
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') closeMobileSearch()
+      }}
+    >
+      <SearchInput
+        autoFocus
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value)}
+        onSubmit={handleSearch}
+      />
+    </div>
+  )}
 
-    <BrowseDropdown />
+
+  {/* ==================== DESKTOP NAVIGATION ==================== */}
+  <nav className={cn(
+    'hidden lg:flex h-12 items-center justify-center gap-1 font-body border-t transition-colors duration-200',
+    hasOpenPanel && 'transition-none',
+    isTransparent ? 'border-transparent' : 'border-primary-100/5'
+  )}>
+
+    <BrowseDropdown isOpen={isBrowseOpen} onOpenChange={setIsBrowseOpen} />
 
     <a
       href="#"
@@ -238,20 +323,6 @@ function Header() {
     <div className="lg:hidden absolute top-full left-0 right-0 bg-primary-700/95 backdrop-blur-xl border-b border-primary-100/10 shadow-e4">
 
       <div className="px-4 py-6 font-body">
-
-        <form onSubmit={handleMobileSearch} role="search" className="mb-4 flex items-center gap-2">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Rechercher un jeu..."
-            aria-label="Rechercher un jeu"
-            className="h-11 flex-1 rounded-control border border-white/15 bg-white/10 px-4 text-sm text-white outline-none transition-colors placeholder:text-primary-200/60 focus:border-white/30"
-          />
-          <Button type="submit" icon aria-label="Rechercher">
-            <Search size={18} strokeWidth={2} />
-          </Button>
-        </form>
 
         <nav className="flex flex-col gap-2">
 
