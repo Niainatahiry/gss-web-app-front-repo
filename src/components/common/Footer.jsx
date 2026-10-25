@@ -1,4 +1,3 @@
-import React from 'react'
 import logoSrc from '../../assets/logos/gss-logo-with-white-text.png'
 
 function Footer() {
@@ -28,7 +27,7 @@ function Footer() {
             href="https://www.facebook.com/profile.php?id=61578280547049" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="w-9 h-9 rounded-lg bg-primary-600 hover:bg-secondary-200 flex items-center justify-center transition-colors duration-300 group"
+            className="w-9 h-9 rounded-control bg-primary-600 hover:bg-secondary-200 flex items-center justify-center transition-colors duration-300 group"
             aria-label="Facebook GSS - Gamessources Madagascar"
           >
             <svg className="w-4 h-4 text-primary-300 group-hover:text-primary-700 transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">

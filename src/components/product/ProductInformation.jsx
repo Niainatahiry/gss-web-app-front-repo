@@ -1,4 +1,6 @@
 import { ShoppingCartPlus, Heart, Star } from 'lucide-react'
+import Button from '../ui/Button'
+import IconButton from '../ui/IconButton'
 
 function ProductInformation() {
 
@@ -166,52 +168,19 @@ function ProductInformation() {
       <div className="flex gap-2 mt-3">
 
         {/* Buy */}
-        <button
-          type="button"
-          className="
-            flex-1
-            h-12
-            rounded-sm
-            bg-secondary/80
-            hover:bg-secondary
-            text-secondary-700
-            font-semibold
-            font-body
-            flex
-            items-center
-            justify-center
-            hover:brightness-110
-            transition-all
-            cursor-pointer
-          "
-        >
+        <Button variant="primary" size="lg" className="flex-1">
           Acheter
-        </button>
+        </Button>
 
 
         {/* Add to cart */}
-        <button
-          type="button"
+        <IconButton
+          variant="tonal"
           aria-label="Ajouter au panier"
-          className="
-            w-12
-            h-12
-            shrink-0
-            rounded-sm
-            bg-primary-600/40
-            text-white/60
-
-            flex
-            items-center
-            justify-center
-          hover:bg-primary-500/40
-
-            transition-colors
-            cursor-pointer
-          "
+          className="h-13 w-13 shrink-0 bg-primary-600/40 text-white/60 hover:bg-primary-500/40"
         >
           <ShoppingCartPlus size={19} />
-        </button>
+        </IconButton>
 
       </div>
 
@@ -219,29 +188,15 @@ function ProductInformation() {
       {/* =========================
           WISHLIST
       ========================== */}
-      <button
-        type="button"
-        className="
-          w-full
-          h-12
-          mt-3
-          rounded-sm
-        bg-primary-600/40
-
-          text-white/60
-          flex
-          items-center
-          justify-center
-          gap-2
-          hover:bg-primary-500/40
-          transition-colors
-          cursor-pointer
-        "
+      <Button
+        variant="tonal"
+        size="lg"
+        className="mt-3 w-full bg-primary-600/40 text-white/60 hover:bg-primary-500/40 hover:text-white"
       >
         <Heart size={18} />
 
         Wishlist
-      </button>
+      </Button>
 
     </div>
   )

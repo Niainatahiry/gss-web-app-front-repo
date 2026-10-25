@@ -1,12 +1,16 @@
 import StarRating from './StarRating'
 import UserAvatar from './UserAvatar'
+import Card from './Card'
 
 // ── Testimonial Card Component ──
 function TestimonialCard({ data }) {
   const { username, avatar, rating, testimonial, gameName } = data
 
   return (
-    <article className="flex h-full flex-col gap-4 rounded-xl border border-white/10 bg-primary-600/40 p-5 sm:p-6 font-body">
+    <Card
+      as="article"
+      className="flex h-full flex-col gap-4 p-5 sm:p-6 font-body bg-primary-600/40"
+    >
 
       <StarRating count={rating} size="sm" />
 
@@ -31,7 +35,7 @@ function TestimonialCard({ data }) {
         </div>
       </div>
 
-    </article>
+    </Card>
   )
 }
 

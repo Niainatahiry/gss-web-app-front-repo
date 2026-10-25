@@ -5,6 +5,7 @@ import PlaystationLogo from '../../assets/logos/consoleLogos/playstation.svg?rea
 import XboxLogo from '../../assets/logos/consoleLogos/Xbox_Logo.svg?react'
 import NintendoLogo from '../../assets/logos/consoleLogos/Nintendo_Switch_Logo.svg?react'
 import MiniGameCard from './MiniGameCard'
+import Button from './Button'
 
 
 function BrowseDropdown() {
@@ -79,12 +80,11 @@ function BrowseDropdown() {
       className="relative flex items-center h-full"
       onMouseLeave={() => setIsOpen(false)}
     >
-      <button 
+      <Button
+        variant="ghost"
         onClick={toggleOpen}
         onMouseEnter={() => setIsOpen(true)}
-        className={`flex items-center gap-1 text-base font-medium text-primary-100 px-4 py-2 transition-colors rounded-lg cursor-pointer ${
-          isOpen ? '' : ''
-        }`}
+        className="px-4 py-2 text-base"
       >
         Parcourir
         <ChevronDown 
@@ -92,11 +92,11 @@ function BrowseDropdown() {
           strokeWidth={2}
           className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
         />
-      </button>
+      </Button>
 
       {isOpen && (
         <div 
-          className="fixed left-0 right-0 top-36 bg-primary border-b border-primary-100/10 shadow-2xl z-40"
+          className="fixed left-0 right-0 top-36 bg-primary border-b border-primary-100/10 shadow-e4 z-40"
           onMouseEnter={() => setIsOpen(true)}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,7 +117,7 @@ function BrowseDropdown() {
           group
           flex items-center gap-3
           px-3 py-2
-          rounded-lg
+          rounded-control
           text-sm
           text-primary-100/70
           hover:text-white

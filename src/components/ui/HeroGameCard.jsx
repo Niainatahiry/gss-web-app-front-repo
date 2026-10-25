@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import ProductInfoPanel from './ProductInfoPanel'
+import Card from './Card'
 
 function HeroGameCard({
   imageUrl = '/src/assets/hero.png',
@@ -22,12 +23,16 @@ function HeroGameCard({
     : 0)
 
   return (
-    <div
+    <Card
+      interactive
+      radius="md"
       onClick={handleClick}
-      className="w-48 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 @container group cursor-pointer"
+      className="group w-48 sm:w-40 md:w-48 lg:w-40 xl:w-48 2xl:w-54 shrink-0 @container overflow-hidden"
     >
-      {/* Game Image — Portrait, never covered by the panel */}
-      <div className="relative w-full aspect-2/3 rounded-t-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow inset-ring-1 inset-ring-white/10">
+      {/* Game Image — Portrait, never covered by the panel.
+          No radius/shadow/ring of its own: the Card supplies the whole
+          silhouette so cover + panel read as one surface. */}
+      <div className="relative w-full aspect-2/3 overflow-hidden">
         <img
           src={imageUrl}
           alt={productName}
@@ -41,10 +46,9 @@ function HeroGameCard({
         />
       </div>
 
-      {/* Description Panel — sits below the cover, so it carries its own
-          bottom radius (ProductCard relies on the card's overflow clip instead) */}
+      {/* Description Panel — clipped by the card, so it carries no radius
+          or shadow of its own */}
       <ProductInfoPanel
-        className="rounded-b-sm"
         productName={productName}
         discount={resolvedDiscount}
         originalPrice={originalPrice}
@@ -52,7 +56,7 @@ function HeroGameCard({
         currency={currency}
         launcherLogo={launcherLogo}
       />
-    </div>
+    </Card>
   )
 }
 

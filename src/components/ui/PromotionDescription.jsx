@@ -1,4 +1,5 @@
 import { SendHorizontal } from 'lucide-react'
+import Button from './Button'
 
 function PromotionDescription({ 
   endDate = "15 Juillet 2026",
@@ -35,12 +36,12 @@ function PromotionDescription({
             Économisez jusqu'à <span className="font-bold text-secondary">-{maxSavings}%</span> sur <span className="font-bold text-primary-100">{gameName}</span> {description}
           </p>
 
-          <button className="bg-secondary-300 hover:bg-secondary-100 text-black/90 font-display font-bold text-xs xl:text-sm 2xl:text-sm uppercase tracking-wide rounded-lg px-6 py-3 xl:px-6 xl:py-2.5 2xl:px-8 2xl:py-3 transition-colors cursor-pointer w-fit mt-2 xl:mt-3 2xl:mt-3.5 flex items-center gap-2 xl:gap-3 2xl:gap-4">
+          <Button className="w-fit mt-2 xl:mt-3 2xl:mt-3.5 gap-2 xl:gap-3 2xl:gap-4 h-auto px-6 py-3 text-xs xl:px-6 xl:py-2.5 xl:text-sm 2xl:px-8 2xl:py-3 2xl:text-sm uppercase tracking-wide">
             Voir l'offre 
             <div className="inline-block w-[18px] h-[18px] xl:w-5 xl:h-5 2xl:w-6 2xl:h-6">
               <SendHorizontal className="w-full h-full" />
             </div>
-          </button>
+          </Button>
         </div>
 
       </div>

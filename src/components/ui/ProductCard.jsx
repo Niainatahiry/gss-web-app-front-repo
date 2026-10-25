@@ -1,4 +1,5 @@
 import ProductInfoPanel from './ProductInfoPanel'
+import Card from './Card'
 
 function ProductCard({
   imageUrl,
@@ -10,7 +11,11 @@ function ProductCard({
   launcherLogo
 }) {
   return (
-    <div className="relative @container w-full aspect-2/3 rounded-sm overflow-hidden group cursor-pointer inset-ring-1 inset-ring-white/10">
+    <Card
+      interactive
+      radius="sm"
+      className="@container relative w-full aspect-2/3 overflow-hidden group"
+    >
       {/* Background Image */}
       <img
         src={imageUrl}
@@ -35,7 +40,7 @@ function ProductCard({
           launcherLogo={launcherLogo}
         />
       </div>
-    </div>
+    </Card>
   )
 }
 

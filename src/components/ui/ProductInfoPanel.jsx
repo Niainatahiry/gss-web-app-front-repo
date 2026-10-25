@@ -1,4 +1,5 @@
 import { formatAriary } from '../../utils/formatPrice'
+import { cn } from '../../lib/cn'
 
 function ProductInfoPanel({
   productName,
@@ -10,7 +11,7 @@ function ProductInfoPanel({
   className = ''
 }) {
   return (
-    <div className={`bg-tertiary-400 p-2 shadow-lg @min-[190px]:p-3 ${className}`}>
+    <div className={cn('bg-tertiary-400 p-2 @min-[190px]:p-3', className)}>
 
       {/* Product Name — fixed height for 3 lines max */}
       <h3

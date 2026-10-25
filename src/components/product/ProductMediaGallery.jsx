@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import IconButton from '../ui/IconButton'
 
 function ProductMediaGallery() {
   // Temporary static data.
@@ -77,54 +78,24 @@ function ProductMediaGallery() {
         />
 
         {/* Previous */}
-        <button
-          type="button"
+        <IconButton
+          shape="pill"
           onClick={previousMedia}
-          className="
-            absolute
-            left-4
-            top-1/2
-            -translate-y-1/2
-            w-10
-            h-10
-            rounded-full
-            bg-black/50
-            flex
-            items-center
-            justify-center
-            text-white
-            hover:bg-black/70
-            transition-colors
-            cursor-pointer
-          "
+          aria-label="Image précédente"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white hover:bg-black/70"
         >
           <ChevronLeft size={20} />
-        </button>
+        </IconButton>
 
         {/* Next */}
-        <button
-          type="button"
+        <IconButton
+          shape="pill"
           onClick={nextMedia}
-          className="
-            absolute
-            right-4
-            top-1/2
-            -translate-y-1/2
-            w-10
-            h-10
-            rounded-full
-            bg-black/50
-            flex
-            items-center
-            justify-center
-            text-white
-            hover:bg-black/70
-            transition-colors
-            cursor-pointer
-          "
+          aria-label="Image suivante"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 text-white hover:bg-black/70"
         >
           <ChevronRight size={20} />
-        </button>
+        </IconButton>
 
       </div>
 
@@ -135,32 +106,15 @@ function ProductMediaGallery() {
       <div className="flex items-center gap-3 mt-3">
 
         {/* Previous thumbnails */}
-        <button
-          type="button"
+        <IconButton
+          shape="pill"
           onClick={previousThumbnails}
           disabled={thumbnailStart === 0}
-        className="
-            shrink-0
-            w-9
-            h-9
-            rounded-full
-            bg-primary
-            border
-            border-primary-100/10
-            text-white
-            flex
-            items-center
-            justify-center
-            enabled:hover:bg-primary-600
-            disabled:opacity-30
-            disabled:cursor-default
-            disabled:border-none
-            transition-colors
-            cursor-pointer
-            "
+          aria-label="Miniatures précédentes"
+          className="shrink-0 w-9 h-9 bg-primary border border-primary-100/10 text-white enabled:hover:bg-primary-600 disabled:opacity-30 disabled:border-none"
         >
           <ChevronLeft size={18} />
-        </button>
+        </IconButton>
 
 
         {/* Thumbnail grid */}
@@ -181,7 +135,7 @@ function ProductMediaGallery() {
                     relative
                     aspect-video
                     overflow-hidden
-                    rounded-lg
+                    rounded-card
                     cursor-pointer
                     transition-all
                     ${
@@ -204,32 +158,15 @@ function ProductMediaGallery() {
 
 
         {/* Next thumbnails */}
-        <button
-          type="button"
+        <IconButton
+          shape="pill"
           onClick={nextThumbnails}
           disabled={thumbnailStart >= media.length - 5}
-          className="
-            shrink-0
-            w-9
-            h-9
-            rounded-full
-            bg-primary
-            border
-            border-primary-100/10
-            text-white
-            flex
-            items-center
-            justify-center
-            enabled:hover:bg-primary-600
-            disabled:opacity-30
-            disabled:cursor-default
-            disabled:border-none
-            transition-colors
-            cursor-pointer
-            "
+          aria-label="Miniatures suivantes"
+          className="shrink-0 w-9 h-9 bg-primary border border-primary-100/10 text-white enabled:hover:bg-primary-600 disabled:opacity-30 disabled:border-none"
         >
           <ChevronRight size={18} />
-        </button>
+        </IconButton>
 
       </div>
 

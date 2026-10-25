@@ -1,5 +1,5 @@
-import React from 'react'
 import { Monitor } from 'lucide-react'
+import Button from '../ui/Button'
 import PlaystationLogo from '../../assets/logos/consoleLogos/playstation.svg?react'
 import XboxLogo from '../../assets/logos/consoleLogos/Xbox_Logo.svg?react'
 import NintendoLogo from '../../assets/logos/consoleLogos/Nintendo_Switch_Logo.svg?react'
@@ -16,24 +16,11 @@ function SelectPlatformsSection() {
 <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
   <div className="flex justify-center gap-8">
     {platforms.map(({ name, Icon }) => (
-      <button
+      <Button
         key={name}
-        type="button"
-        className="
-          group
-          w-28 h-28
-          flex flex-col
-          items-center
-          justify-center
-          gap-2
-          rounded-xl
-          bg-white/5
-          hover:bg-white/2
-          text-white
-          transition-all
-          duration-200
-          cursor-pointer
-        "
+        variant="ghost"
+        shape="none"
+        className="group w-28 h-28 flex-col gap-2 rounded-card bg-white/5 text-white hover:bg-white/[0.02] hover:text-white"
       >
         <Icon
           className="
@@ -47,7 +34,7 @@ function SelectPlatformsSection() {
         <span className="text-xs font-medium text-center">
           {name}
         </span>
-      </button>
+      </Button>
     ))}
   </div>
 </section>

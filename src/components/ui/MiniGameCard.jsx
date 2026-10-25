@@ -8,7 +8,7 @@ function MiniGameCard({
   launcherLogo 
 }) {
   return (
-      <div className="relative w-full aspect-2/3 rounded-sm overflow-hidden group cursor-pointer">
+      <div className="group relative w-full aspect-2/3 rounded-sm overflow-hidden cursor-pointer shadow-e1">
       {/* Background Image */}
       <img
         src={imageUrl}
@@ -22,7 +22,7 @@ function MiniGameCard({
       />
       {/* Discount Ticket */}
       <div className="absolute top-0 left-3 z-10">
-        <div className="bg-secondary text-black text-xs font-bold px-2.5 py-1 rounded-b-sm shadow-md">
+        <div className="bg-secondary text-black text-xs font-bold px-2.5 py-1 rounded-b-sm shadow-e1">
           -{discount}%
         </div>
       </div>
@@ -39,7 +39,7 @@ function MiniGameCard({
     bg-tertiary-400
     border border-white/20
     p-3
-    shadow-lg
+    shadow-e3
   ">
 
     {/* Product Name */}

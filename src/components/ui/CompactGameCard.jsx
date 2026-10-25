@@ -16,7 +16,7 @@ function CompactGameCard({
   return (
     <button
       onClick={() => onSelect?.(index)}
-      className={`relative flex items-center gap-[0.6vw] p-[0.5vw] rounded-lg transition-all duration-200 text-left w-full h-full overflow-hidden ${
+      className={`relative flex items-center gap-[0.6vw] p-[0.5vw] rounded-card transition-all duration-200 text-left w-full h-full overflow-hidden ${
         isActive 
           ? 'bg-white/10 border border-white/20' 
           : 'hover:bg-white/5 border border-transparent'

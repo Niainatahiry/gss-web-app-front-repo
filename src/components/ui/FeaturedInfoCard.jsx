@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import Button from './Button'
 
 function FeaturedInfoCard({
   title,
@@ -84,20 +85,24 @@ function FeaturedInfoCard({
           {/* Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
             {primaryButtonText && (
-              <button
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={primaryButtonAction}
-                className="bg-secondary/80 hover:bg-secondary font-display text-secondary-700 text-[10px] sm:text-xs md:text-sm font-bold px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors"
+                className="h-auto py-2 px-3 text-[10px] sm:py-2.5 sm:px-4 sm:text-xs md:py-3 md:px-5 md:text-sm"
               >
                 {primaryButtonText}
-              </button>
+              </Button>
             )}
             {secondaryButtonText && (
-              <button
+              <Button
+                variant="tonal"
+                size="sm"
                 onClick={secondaryButtonAction}
-                className="bg-primary-600/40 hover:bg-primary-500/40 text-white/60 font-display text-[10px] sm:text-xs md:text-sm font-medium px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 rounded-lg transition-colors"
+                className="h-auto py-2 px-3 text-[10px] sm:py-2.5 sm:px-4 sm:text-xs md:py-3 md:px-5 md:text-sm bg-primary-600/40 text-white/60 hover:bg-primary-500/40 hover:text-white"
               >
                 {secondaryButtonText}
-              </button>
+              </Button>
             )}
           </div>
         </div>

@@ -1,11 +1,14 @@
-import React from 'react'
 import { Bookmark } from 'lucide-react'
+import IconButton from './IconButton'
 
 function WishlistButtonUI() {
   return (
-    <button className="bg-tertiary rounded-md p-2 cursor-pointer hover:bg-tertiary-300 transition-colors">
+    <IconButton
+      aria-label="Ajouter à la wishlist"
+      className="w-auto h-auto p-2 bg-tertiary text-primary-700 hover:bg-tertiary-300"
+    >
       <Bookmark size={18} className="text-primary-700" fill="currentColor" />
-    </button>
+    </IconButton>
   )
 }
 
