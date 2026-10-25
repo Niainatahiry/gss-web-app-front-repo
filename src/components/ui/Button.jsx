@@ -26,6 +26,11 @@ const base =
 const variants = {
   primary: 'bg-secondary text-secondary-700 shadow-e2 hover:bg-secondary-100 hover:shadow-e3',
   tonal: 'bg-primary-600 text-white hover:bg-primary-500 hover:shadow-e2',
+  surface:
+    'bg-primary-600/40 text-white/60 shadow-e2 ' +
+    'hover:bg-primary-500/40 hover:text-white hover:shadow-e3 ' +
+    'aria-expanded:bg-primary-500/40 aria-expanded:text-white aria-expanded:shadow-e3 ' +
+    'focus-visible:ring-white/20',
   outline: 'border border-white/15 text-primary-100 hover:border-white/25 hover:bg-white/5',
   ghost: 'text-primary-100 hover:bg-white/5 hover:text-white',
   danger: 'bg-red-600 text-white hover:bg-red-500 hover:shadow-e2',

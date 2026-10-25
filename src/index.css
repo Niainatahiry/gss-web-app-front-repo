@@ -206,6 +206,61 @@ body {
   font-weight: var(--font-weight-regular);
 }
 
+/* ── Thin scrollbar for dark surfaces (drawer panels, side sheets) ──
+   Chromium/Safari: the WebKit pseudo-elements. The 2px transparent border +
+   background-clip trick keeps the *visual* thumb slimmer (4px) than its 8px
+   gutter, so the bar reads as a hairline instead of a native block.
+   Firefox: the standard properties, scoped through @supports so they never
+   override the pseudo-elements in Chromium (modern Chrome ignores
+   ::-webkit-scrollbar once scrollbar-width/color are specified). */
+.scrollbar-slim::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-color: rgb(255 255 255 / 0.18);
+  background-clip: content-box;
+}
+
+.scrollbar-slim::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(255 255 255 / 0.35);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+  }
+}
+
+/* ── Scroll lock (Radix Select, drawers) ──
+   Reserve the scrollbar space permanently so hiding it never changes the
+   viewport width — otherwise the fixed header grows by the scrollbar width
+   and everything jumps. `scrollbar-gutter` lives on <html> because that is
+   the element that owns the viewport scrollbar.
+
+   react-remove-scroll (used by Radix) then compensates with
+   `margin-right: <gap>` on body[data-scroll-locked]. Since the gutter
+   already reserves that space, the compensation would shrink the content
+   by the same amount — so we neutralise it. The `html` prefix raises the
+   specificity above the stylesheet the library injects at runtime (both
+   use !important). */
+html {
+  scrollbar-gutter: stable;
+}
+
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
 /* ── Auto-rotation progress bar (PopularGames) ──
    Animated on the compositor via transform, so the carousel timer no longer
    needs a React state update every frame. */
@@ -215,5 +270,17 @@ body {
   }
   to {
     transform: scaleX(1);
+  }
+}
+
+/* ── Select (Radix) — panel entrance ── */
+@keyframes select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
