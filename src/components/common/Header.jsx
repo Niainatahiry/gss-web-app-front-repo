@@ -156,7 +156,9 @@ function Header() {
         shadow-none: the component elevation smudges over the cream input.
         The background gradient is the short cream → yellow blend at the seam,
         scoped to this button and following the input's focus colour.
-        Inset focus ring so keyboard focus never draws a black offset band. */}
+        No focus ring on this button: it renders a near-black inset border on
+        the yellow surface. The plain ring-0 also cancels the component's
+        default ring + black offset band. */}
     <Button
       type="submit"
       shape="none"
@@ -166,8 +168,8 @@ function Header() {
         shadow-none hover:shadow-none
         bg-[linear-gradient(to_right,#f5f5f0,transparent_16px)]
         group-has-[input:focus]:bg-[linear-gradient(to_right,#fff,transparent_16px)]
-        focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-700
-        focus-visible:ring-offset-0
+        focus-visible:ring-0 focus-visible:ring-offset-0
+        active:scale-100
       "
     >
       <Search

@@ -56,8 +56,8 @@ function UserAvatar({
             className="w-9 h-9 rounded-full object-cover"
           />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-primary-500 flex items-center justify-center">
-            <span className="font-display text-xs font-bold text-primary-100">
+          <div className="w-9 h-9 rounded-full bg-tertiary-550 flex items-center justify-center">
+            <span className="font-display text-xs font-bold text-white/70">
               {initials}
             </span>
           </div>
