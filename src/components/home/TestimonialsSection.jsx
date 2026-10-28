@@ -160,7 +160,7 @@ function TestimonialsSection() {
 
   return (
     <section className="w-full overflow-x-clip bg-primary-100/5 py-10 sm:py-12 md:py-16">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8 lg:px-16 xl:px-6">
         {/* Editorial banner — giant opening quote + section label */}
         <div className="flex justify-start text-secondary">
           <FontAwesomeIcon

@@ -62,7 +62,7 @@ function SelectPlatformsSection() {
   const arrowClass = 'w-9 h-9 shrink-0 rounded-full'
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-6">
       <div className="flex items-center gap-2 sm:gap-4">
         {canScroll && (
           <IconButton

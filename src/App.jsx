@@ -10,6 +10,7 @@ import HomePage from './pages/user/HomePage';
 import SearchPage from './pages/user/SearchPage';
 import ProductPage from './pages/user/ProductPage';
 import CartPage from './pages/user/CartPage';
+import AuthPage from './pages/user/AuthPage';
 import DebugOverlay from './components/debug/DebugOverlay';
 import { SPACING } from './pages/user/layoutSpacing';
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
           handle={{ spacing: SPACING.headerWithFooterGap }}
         />
         <Route path="/cart" element={<CartPage />} handle={{ spacing: SPACING.header }} />
+        <Route path="/auth" element={<AuthPage />} handle={{ spacing: SPACING.header }} />
       </Route>
 
       {/* Admin routes */}

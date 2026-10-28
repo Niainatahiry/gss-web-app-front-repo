@@ -261,7 +261,10 @@ function Header() {
           </div>
         ) : (
           <IconButton
-            onClick={() => setIsLoggedIn(true)}
+            onClick={() => {
+              setIsNavMenuOpen(false)
+              navigate('/auth')
+            }}
             className="w-9 h-9"
             aria-label="Se connecter"
           >

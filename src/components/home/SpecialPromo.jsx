@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import GameCardThirdType from '../ui/GameCardThirdType'
+import CarouselDots from '../ui/CarouselDots'
 import { cn } from '../../lib/cn'
 import { specialPromotions } from '../../data/promotions'
 
@@ -50,36 +51,6 @@ function PromotionBanner({ banner, eager = false }) {
   )
 }
 
-function PromotionDots({ promotions, activeIndex, onSelect, className }) {
-  return (
-    <div
-      role="group"
-      aria-label="Choisir une promotion"
-      className={cn('flex items-center justify-center gap-2', className)}
-    >
-      {promotions.map((promo, index) => {
-        const isActive = index === activeIndex
-
-        return (
-          <button
-            key={promo.id}
-            type="button"
-            onClick={() => onSelect(index)}
-            aria-label={`Afficher la promotion ${getPromotionTitle(promo)}`}
-            aria-current={isActive ? 'true' : undefined}
-            className={cn(
-              'h-2 cursor-pointer rounded-full transition-all duration-300 motion-reduce:transition-none',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary',
-              'focus-visible:ring-offset-2 focus-visible:ring-offset-primary-700',
-              isActive ? 'w-6 bg-secondary' : 'w-2 bg-white/25 hover:bg-white/50'
-            )}
-          />
-        )
-      })}
-    </div>
-  )
-}
-
 /**
  * Dimmed neighbour on desktop — cover art only. Clicking anywhere (or the
  * chevron on its inner edge) brings that promotion to the middle.
@@ -97,7 +68,7 @@ function SidePromotion({ promo, direction, onSelect }) {
       onClick={onSelect}
       aria-label={`Afficher la promotion ${getPromotionTitle(promo)}`}
       className={cn(
-        'group relative hidden h-(--side-card-h,150px) w-148 cursor-pointer overflow-hidden @min-[300px]:block',
+        'group/card relative hidden xl:block h-(--side-card-h,150px) w-148 shrink-0 cursor-pointer overflow-hidden',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary',
         /* Fade only the exterior edge, so the artwork blends into the page
            instead of being cut by the viewport. */
@@ -111,12 +82,19 @@ function SidePromotion({ promo, direction, onSelect }) {
         src={promo.cover}
         alt=""
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover opacity-55 transition-opacity duration-500 group-hover:opacity-85 motion-reduce:transition-none"
+        className={cn(
+          'absolute inset-0 h-full w-full object-cover',
+          isPrev ? 'object-right' : 'object-left',
+          'opacity-50 saturate-50 transition-[opacity,filter] duration-500',
+          'group-hover/card:opacity-95 group-hover/card:saturate-100',
+          'group-has-[.chevron:hover]:opacity-95 group-has-[.chevron:hover]:saturate-100',
+          'motion-reduce:transition-none'
+        )}
       />
 
       <span
         aria-hidden="true"
-        className="absolute inset-0 bg-primary-700/20 transition-opacity duration-300 group-hover:opacity-60 motion-reduce:transition-none"
+        className="absolute inset-0 bg-primary-700/25 transition-opacity duration-300 group-hover/card:opacity-30 group-has-[.chevron:hover]:opacity-30 motion-reduce:transition-none"
       />
     </button>
   )
@@ -137,7 +115,7 @@ function NavChevron({ direction, onClick, className }) {
       onClick={onClick}
       aria-label={isPrev ? 'Promotion précédente' : 'Promotion suivante'}
       className={cn(
-        'flex shrink-0 cursor-pointer items-center justify-center text-white/85',
+        'chevron flex shrink-0 cursor-pointer items-center justify-center text-white/85',
         'drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-transform duration-200 motion-reduce:transition-none',
         'hover:text-secondary',
         isPrev ? 'hover:-translate-x-0.5' : 'hover:translate-x-0.5',
@@ -145,7 +123,7 @@ function NavChevron({ direction, onClick, className }) {
         className
       )}
     >
-      <Icon className="h-9 w-9 2xl:h-11 2xl:w-11" strokeWidth={2.5} />
+      <Icon className="h-11 w-11 lg:h-16 lg:w-16  2xl:h-12 2xl:w-12" strokeWidth={2.5} />
     </button>
   )
 }
@@ -290,11 +268,13 @@ function SpecialPromo() {
         </div>
 
         {count > 1 && (
-          <PromotionDots
-            promotions={promotions}
+          <CarouselDots
+            count={promotions.length}
             activeIndex={current}
             onSelect={goTo}
-            className="mt-5"
+            getLabel={(index) => `Afficher la promotion ${getPromotionTitle(promotions[index])}`}
+            groupLabel="Choisir une promotion"
+            className="mt-2"
           />
         )}
       </div>
@@ -303,7 +283,7 @@ function SpecialPromo() {
           covers sit in the margins and fade into the page at the screen edge */}
       <div className="hidden lg:block">
         <div ref={rowRef} className="flex justify-center">
-          <div className="@container flex min-w-0 flex-1 basis-0 items-center justify-end gap-5 overflow-hidden pr-1">
+          <div className="group @container flex min-w-0 flex-1 basis-0 items-center justify-end gap-5 overflow-hidden pr-1">
             {prevPromo && (
               <SidePromotion
                 promo={prevPromo}
@@ -316,14 +296,14 @@ function SpecialPromo() {
               <NavChevron
                 direction="prev"
                 onClick={() => goTo(current - 1)}
-                className="hidden min-[1500px]:flex"
+                className="hidden 2xl:flex"
               />
             )}
           </div>
 
           <div
             ref={spotlightRef}
-            className="w-[1280px] max-w-full shrink-0 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0"
+            className="w-7xl max-w-full shrink-0 px-4 sm:px-6 md:px-8 lg:px-16 xl:w-280 xl:px-16 2xl:px-6 min-[1920px]:w-7xl"
           >
             <div className="relative">
               {count > 1 && (
@@ -331,13 +311,13 @@ function SpecialPromo() {
                   <NavChevron
                     direction="prev"
                     onClick={() => goTo(current - 1)}
-                    className="absolute left-1 top-1/2 z-10 -translate-y-1/2 min-[1500px]:hidden"
+                    className="absolute -left-14 top-1/2 z-10 -translate-y-1/2 2xl:hidden"
                   />
 
                   <NavChevron
                     direction="next"
                     onClick={() => goTo(current + 1)}
-                    className="absolute right-1 top-1/2 z-10 -translate-y-1/2 min-[1500px]:hidden"
+                    className="absolute -right-14 top-1/2 z-10 -translate-y-1/2 2xl:hidden"
                   />
                 </>
               )}
@@ -356,12 +336,12 @@ function SpecialPromo() {
             </div>
           </div>
 
-          <div className="@container flex min-w-0 flex-1 basis-0 items-center justify-start gap-5 overflow-hidden pl-1">
+          <div className="group @container flex min-w-0 flex-1 basis-0 items-center justify-start gap-5 overflow-hidden pl-1">
             {count > 1 && (
               <NavChevron
                 direction="next"
                 onClick={() => goTo(current + 1)}
-                className="hidden min-[1500px]:flex"
+                className="hidden 2xl:flex"
               />
             )}
 

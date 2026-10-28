@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
+import CarouselDots from '../ui/CarouselDots'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
@@ -85,7 +86,6 @@ const RAIL_MAX = 300
 
 function PopularGames({ sideRails = null }) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [scrollToActive, setScrollToActive] = useState(false)
   const [timerResetKey, setTimerResetKey] = useState(0)
   const [isSectionVisible, setIsSectionVisible] = useState(false)
   const [isTabVisible, setIsTabVisible] = useState(() => !document.hidden)
@@ -96,6 +96,60 @@ function PopularGames({ sideRails = null }) {
   const gridRef = useRef(null)
 
   const activeGame = popularGamesData[activeIndex]
+
+  /* Programmatic carousel navigation. From the moment a dot/card is clicked
+     (or the auto-rotation advances) until the animation ends, the click owns
+     `activeIndex`: the scroll listener must not re-elect a card in between.
+     Without this arbitration every scroll frame of the animation rewrote the
+     index, so a click could settle on a neighbouring card. */
+  const navIndexRef = useRef(null) // index targeted by a running programmatic scroll
+  const navTimeoutRef = useRef(0) // fallback for browsers without `scrollend`
+  const suppressTrackingRef = useRef(false) // geometry stays quiet after an explicit choice
+
+  const endNavigation = useCallback((applyIndex) => {
+    window.clearTimeout(navTimeoutRef.current)
+    navTimeoutRef.current = 0
+
+    const index = navIndexRef.current
+    navIndexRef.current = null
+
+    if (applyIndex && index !== null) {
+      setActiveIndex(index) // an explicit choice always wins
+      suppressTrackingRef.current = true
+    }
+  }, [])
+
+  const scrollToCard = useCallback((index) => {
+    const container = scrollContainerRef.current
+    const card = cardRefs.current[index]
+    if (!container || !card || window.innerWidth >= 1024) return
+
+    navIndexRef.current = index
+
+    const containerRect = container.getBoundingClientRect()
+    const cardRect = card.getBoundingClientRect()
+    const delta =
+      (cardRect.left + cardRect.width / 2) -
+      (containerRect.left + container.clientWidth / 2)
+
+    // Clamp: the first/last cards cannot always be perfectly centred because
+    // of the container's padding, and we must never overshoot the scroll range.
+    const maxLeft = Math.max(0, container.scrollWidth - container.clientWidth)
+    const left = Math.min(Math.max(container.scrollLeft + delta, 0), maxLeft)
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Only `left` is written: the page's vertical scroll is never touched.
+    container.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' })
+
+    if (reduceMotion) {
+      endNavigation(true)
+      return
+    }
+
+    window.clearTimeout(navTimeoutRef.current)
+    navTimeoutRef.current = window.setTimeout(() => endNavigation(true), 900)
+  }, [endNavigation])
 
   /* Size the side rails from the space actually free in the margins, capped by
      the card grid's height so a square rail never runs past the cards. Written
@@ -153,35 +207,20 @@ function PopularGames({ sideRails = null }) {
     if (!isSectionVisible || !isTabVisible) return undefined
 
     const timeoutId = setTimeout(() => {
-      if (window.innerWidth < 1024) setScrollToActive(true)
-      setActiveIndex(prev => (prev + 1) % popularGamesData.length)
+      const next = (activeIndex + 1) % popularGamesData.length
+      setActiveIndex(next)
+      scrollToCard(next)
     }, TIMER_DURATION)
 
     return () => clearTimeout(timeoutId)
-  }, [activeIndex, timerResetKey, isSectionVisible, isTabVisible])
-
-  // Scroll the active card into view in carousel mode (< lg), for clicks and auto-rotation
-  useEffect(() => {
-    if (!scrollToActive) return
-
-    const card = cardRefs.current[activeIndex]
-    const container = scrollContainerRef.current
-    if (!card || !container) return
-
-    const isMobile = window.innerWidth < 1024
-    if (!isMobile) return
-
-    card.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'center',
-    })
-  }, [activeIndex, scrollToActive])
+  }, [activeIndex, timerResetKey, isSectionVisible, isTabVisible, scrollToCard])
 
   // Carousel tracking — pick the card closest to the container's center.
   // (Previous IntersectionObserver-based version accepted every card >= 60%
   // visible, so with the new capped card widths two cards could qualify and
   // the last processed one won, shifting the active index by +/-1.)
+  // Skipped while a programmatic navigation runs and until the user takes over
+  // again, so a click can never be undone mid-animation.
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return undefined
@@ -190,6 +229,7 @@ function PopularGames({ sideRails = null }) {
 
     const updateActiveIndex = () => {
       frameId = 0
+      if (navIndexRef.current !== null || suppressTrackingRef.current) return
       if (!container.clientWidth) return
 
       const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2
@@ -207,7 +247,6 @@ function PopularGames({ sideRails = null }) {
         }
       })
 
-      setScrollToActive(false)
       if (closestIndex !== null) {
         setActiveIndex(prev => (prev === closestIndex ? prev : closestIndex))
       }
@@ -218,22 +257,49 @@ function PopularGames({ sideRails = null }) {
       frameId = requestAnimationFrame(updateActiveIndex)
     }
 
+    const handleScrollEnd = () => {
+      if (navIndexRef.current !== null) endNavigation(true)
+    }
+
+    // Any real interaction means the user takes over: drop the running
+    // navigation and hand `activeIndex` back to the geometry.
+    const handleUserIntent = () => {
+      endNavigation(false)
+      suppressTrackingRef.current = false
+    }
+
+    // A resize/orientation change invalidates the previous geometry, so the
+    // tracking must be allowed to run again (without forcing any scroll).
+    const handleResize = () => {
+      suppressTrackingRef.current = false
+      handleScroll()
+    }
+
     updateActiveIndex()
     container.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', handleScroll)
+    container.addEventListener('scrollend', handleScrollEnd)
+    container.addEventListener('pointerdown', handleUserIntent)
+    container.addEventListener('touchstart', handleUserIntent, { passive: true })
+    container.addEventListener('wheel', handleUserIntent, { passive: true })
+    window.addEventListener('resize', handleResize)
 
     return () => {
       container.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleScroll)
+      container.removeEventListener('scrollend', handleScrollEnd)
+      container.removeEventListener('pointerdown', handleUserIntent)
+      container.removeEventListener('touchstart', handleUserIntent)
+      container.removeEventListener('wheel', handleUserIntent)
+      window.removeEventListener('resize', handleResize)
       if (frameId) cancelAnimationFrame(frameId)
+      window.clearTimeout(navTimeoutRef.current)
     }
-  }, [])
+  }, [endNavigation])
 
   const handleGameSelect = useCallback((index) => {
-    if (window.innerWidth < 1024) setScrollToActive(true)
     setActiveIndex(index)
     setTimerResetKey(prev => prev + 1)
-  }, [])
+    scrollToCard(index)
+  }, [scrollToCard])
 
   const handleBuy = useCallback(() => {
     console.log('Buy', popularGamesData[activeIndex].productName)
@@ -246,7 +312,7 @@ function PopularGames({ sideRails = null }) {
   const itemCount = popularGamesData.length
 
   return (
-    <div ref={sectionRef} className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0">
+    <div ref={sectionRef} className="max-w-7xl mx-auto pb-4 pt-8 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-6">
       {/* Section Header */}
       <div className="mb-4 sm:mb-5 md:mb-6">
         <h2 className="font-heading text-3xl sm:text-3xl md:text-5xl text-white/80">
@@ -383,18 +449,15 @@ function PopularGames({ sideRails = null }) {
           ))}
         </div>
       </div>
-      {/* Mobile dots indicator — clickable */}
-      <div className="lg:hidden flex justify-center gap-2 mt-4">
-        {popularGamesData.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleGameSelect(index)}
-            className={`h-2 rounded-full transition-all cursor-pointer ${
-              index === activeIndex ? 'bg-white w-6' : 'bg-white/30 w-2 hover:bg-white/50'
-            }`}
-          />
-        ))}
-      </div>
+      {/* Mobile dots indicator — same shared styling as every other carousel */}
+      <CarouselDots
+        count={popularGamesData.length}
+        activeIndex={activeIndex}
+        onSelect={handleGameSelect}
+        getLabel={(index) => `Afficher ${popularGamesData[index].productName}`}
+        groupLabel="Navigation des jeux populaires"
+        className="mt-1 lg:hidden"
+      />
     </div>
   )
 }

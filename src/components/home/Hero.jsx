@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import HeroGameCard from '../ui/HeroGameCard'
 import PromotionDescription from '../ui/PromotionDescription'
+import CarouselDots from '../ui/CarouselDots'
 import { onHeroAutoplayPause, onHeroAutoplayResume } from '../../utils/heroAutoplay'
 import { formatAriary } from '../../utils/formatPrice'
 
@@ -504,28 +505,14 @@ function Hero() {
       {/* Mobile: dots. Tablet/desktop: the previous side arrows. */}
       {hasMultipleSlides && (
         <>
-          <div
-            className="relative z-20 flex justify-center gap-2 pb-6 md:hidden"
-            role="group"
-            aria-label="Navigation des promotions"
-          >
-            {slidesData.map((slide, index) => {
-              const isActive = index === activeSlideIndex
-
-              return (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => goToSlide(index)}
-                  aria-label={`Aller à la promotion ${index + 1}`}
-                  aria-current={isActive ? 'true' : undefined}
-                  className={`h-2 cursor-pointer rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-550 ${
-                    isActive ? 'w-6 bg-white' : 'w-2 bg-white/30 hover:bg-white/60'
-                  }`}
-                />
-              )
-            })}
-          </div>
+          <CarouselDots
+            count={slidesData.length}
+            activeIndex={activeSlideIndex}
+            onSelect={goToSlide}
+            getLabel={(index) => `Aller à la promotion ${index + 1}`}
+            groupLabel="Navigation des promotions"
+            className="relative z-20 pb-3 md:hidden"
+          />
 
           <button
             type="button"
