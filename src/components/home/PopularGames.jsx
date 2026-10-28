@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useLayoutEffect, useState, useRef, useCallback } from 'react'
 import CompactGameCard from '../ui/CompactGameCard'
 import FeaturedInfoCard from '../ui/FeaturedInfoCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -74,7 +74,16 @@ const popularGamesData = [
 
 const TIMER_DURATION = 7000
 
-function PopularGames() {
+/* Side rails (rendered by SidePromotions) are sized from the free margin, then
+   capped by the card grid height and an absolute ceiling so they stay sober on
+   ultra-wide screens. RAIL_GAP must match the `mr-6` / `ml-6` on those rails;
+   RAIL_EDGE_INSET is the breathing room left at the viewport edge (8px
+   reproduces the original 280px rail on a 1920px screen). */
+const RAIL_GAP = 24
+const RAIL_EDGE_INSET = 8
+const RAIL_MAX = 300
+
+function PopularGames({ sideRails = null }) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [scrollToActive, setScrollToActive] = useState(false)
   const [timerResetKey, setTimerResetKey] = useState(0)
@@ -84,8 +93,39 @@ function PopularGames() {
   const sectionRef = useRef(null)
   const scrollContainerRef = useRef(null)
   const cardRefs = useRef([])
+  const gridRef = useRef(null)
 
   const activeGame = popularGamesData[activeIndex]
+
+  /* Size the side rails from the space actually free in the margins, capped by
+     the card grid's height so a square rail never runs past the cards. Written
+     to a CSS variable — no state, so this never triggers a re-render. */
+  useLayoutEffect(() => {
+    const grid = gridRef.current
+    if (!grid) return undefined
+
+    const measure = () => {
+      const rect = grid.getBoundingClientRect()
+      if (!rect.height) return // display:none below lg
+
+      const viewportWidth = document.documentElement.clientWidth
+      const gutter = Math.min(rect.left, viewportWidth - rect.right) - RAIL_GAP - RAIL_EDGE_INSET
+      const size = Math.max(0, Math.min(gutter, rect.height, RAIL_MAX))
+
+      grid.style.setProperty('--rail-size', `${Math.floor(size)}px`)
+    }
+
+    measure()
+
+    const observer = new ResizeObserver(measure)
+    observer.observe(grid)
+    window.addEventListener('resize', measure)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [])
 
   /* Only rotate while the section is on screen. The previous version polled
      React state every 16 ms, which re-rendered the whole section ~60x/s. */
@@ -225,8 +265,12 @@ function PopularGames() {
           </a>
         </h2>
       </div>
-      {/* lg+ : Two-column grid with Featured + Sidebar */}
-      <div className="hidden lg:grid lg:grid-cols-[1fr_340px] gap-4">
+      {/* lg+ : Two-column grid with Featured + Sidebar.
+          `sideRails` is absolutely positioned, so it is not a grid item: it
+          anchors to this grid's top, i.e. the cards — not the section title,
+          whose height therefore never needs to be known or compensated. */}
+      <div ref={gridRef} className="relative hidden lg:grid lg:grid-cols-[1fr_340px] gap-4">
+        {sideRails}
         
         {/* Left: Featured — h-full to match sidebar height */}
         <div className="relative rounded-card overflow-hidden group h-full shadow-e3 ring-1 ring-white/10">
