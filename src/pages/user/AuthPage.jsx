@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import Header from '../../components/common/Header'
+import { Link } from 'react-router-dom'
 import TextField from '../../components/ui/TextField'
 import { authQuotes } from '../../data/authQuotes'
 import { cn } from '../../lib/cn'
+import logoSrc from '../../assets/logos/gss-logo-with-white-text.png'
 import quoteMark from '../../assets/images/auth/quote-mark.png'
 
 const LEGAL_LINKS = [
@@ -78,8 +79,9 @@ function SteamIcon() {
 
 /**
  * Page de connexion.
- * Route `/auth`, déclarée hors du UserLayout pour garder son propre pied de
- * page légal, tout en réutilisant le header du site.
+ * Route `/auth` : pas de header ni de footer du site, mais le logo reprend
+ * exactement la position/taille qu'il a dans le header, avec son propre pied
+ * de page légal.
  */
 function AuthPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -91,10 +93,18 @@ function AuthPage() {
 
   return (
     <div className="relative isolate flex min-h-screen flex-col overflow-hidden bg-tertiary-550 font-body text-white">
-      <Header />
-
-      {/* Décale le contenu sous le header fixe (96px mobile, 144px dès lg) */}
-      <div className="h-24 shrink-0 lg:h-36" aria-hidden="true" />
+      {/* Logo seul — centré sous md, aligné comme dans le header à partir de md */}
+      <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex h-24 items-center justify-center md:justify-start">
+          <Link to="/" className="logo-container shrink-0" aria-label="GSS — Retour à l'accueil">
+            <img
+              src={logoSrc}
+              alt="GSS Logo"
+              className="h-12 w-auto"
+            />
+          </Link>
+        </div>
+      </div>
 
       {/* Personnage de la citation active — aligné sur la colonne de contenu */}
       {activeQuote.image && (
