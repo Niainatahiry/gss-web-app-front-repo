@@ -27,8 +27,10 @@ const router = createBrowserRouter(
           handle={{ spacing: SPACING.headerWithFooterGap }}
         />
         <Route path="/cart" element={<CartPage />} handle={{ spacing: SPACING.header }} />
-        <Route path="/auth" element={<AuthPage />} handle={{ spacing: SPACING.header }} />
       </Route>
+
+      {/* Auth : page dédiée (header du site, pied de page légal propre) */}
+      <Route path="/auth" element={<AuthPage />} />
 
       {/* Admin routes */}
       <Route path="/admin/*" element={<AdminLayout />} />

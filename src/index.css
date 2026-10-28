@@ -261,6 +261,15 @@ html body[data-scroll-locked] {
   padding-right: 0 !important;
 }
 
+/* ── Login character — fondu du bas dans le fond de page ──
+   A subtle bottom fade so the cut-out render blends into the teal instead of
+   stopping abruptly at the viewport edge. Kept as a named utility (rather than
+   an arbitrary Tailwind class) so the fade point is easy to tune. */
+.auth-character-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 85%, transparent 100%);
+}
+
 /* ── Auto-rotation progress bar (PopularGames) ──
    Animated on the compositor via transform, so the carousel timer no longer
    needs a React state update every frame. */
