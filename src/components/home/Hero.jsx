@@ -539,7 +539,7 @@ function Hero() {
             type="button"
             aria-label="Slide suivant"
             onClick={nextSlide}
-            className="absolute right-1 top-1/2 z-30 hidden -translate-y-1/2 p-2 text-secondary drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:translate-x-0.5 hover:text-secondary-100 md:flex md:right-2"
+            className="absolute right-1 top-1/2 z-30 hidden -translate-y-1/2 p-2 text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] transition-all duration-200 hover:translate-x-0.5 hover:text-secondary-100 md:flex md:right-2"
           >
             <FontAwesomeIcon icon={faAngleRight} className="text-5xl md:text-6xl" />
           </button>
