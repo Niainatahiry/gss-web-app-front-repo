@@ -61,14 +61,21 @@
   --shadow-e3: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 6px 16px -4px rgb(0 0 0 / 0.50);
   --shadow-e4: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 12px 28px -8px rgb(0 0 0 / 0.55);
 
-  /* ── Hard-shadow "slab" — primary CTA only ──
-     Three stacked materials, no blur: yellow face → opaque tertiary-100 slab
-     → 1px white hairline. The thickness is driven by --slab so each Button
-     size can tune it (2px sm / 3px md / 4px lg) instead of shipping three
-     near-identical tokens. */
+  /* ── Slab — the primary CTA's extruded base ──
+     A copy of the button offset down-right and painted behind it. The copy
+     keeps the control's border-radius, so the base hugs the rounded corners.
+
+     We tried the "true" version — two clip-path faces placed below and right
+     of the box — and rejected it: a clip-path polygon cannot follow a 10px
+     radius, so the faces showed square shoulders poking past the rounded
+     face at the bottom-left/right and the top-right. The offset copy gives
+     the same read (bottom + right depth) with no artifact.
+
+     Extrusion vector: --slab-x (right) / --slab-y (down), per Button size.
+     A parent with `overflow: hidden` clips it. */
   --shadow-slab:
-    0 var(--slab, 3px) 0 0 var(--color-tertiary-300),
-    0 calc(var(--slab, 3px) + 1px) 0 0 rgb(255 255 255 / 0.85);
+    var(--slab-x, 2px) var(--slab-y, 4px) 0 0
+    var(--slab-color, var(--color-tertiary-400));
 
   /* ── Motion ── */
   --ease-material: cubic-bezier(0.2, 0, 0, 1);

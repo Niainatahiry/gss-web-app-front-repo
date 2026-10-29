@@ -5,10 +5,9 @@ import surface from './surfaces'
  * Design-system button.
  *
  * Variants
- *  - primary  yellow CTA — one per view. Hard-shadow "slab": the yellow face
- *             sits on an opaque tertiary-100 edge closed by a 1px white
- *             hairline (see --shadow-slab). It reads as a pressed physical
- *             object rather than a floating card.
+ *  - primary  yellow CTA — one per view. Extruded "slab" (--shadow-slab): a
+ *             copy of the button offset down-right behind the face, so the
+ *             control reads as a physical object seen from the front-left.
  *  - tonal    dark filled secondary action
  *  - surface  teal card material — same recipe as the Select trigger
  *  - outline  bordered, on dark surfaces (still the go-to for true ghosts)
@@ -16,8 +15,8 @@ import surface from './surfaces'
  *  - danger   destructive
  *
  * Sizes:  sm | md | lg | icon (icon = square, padding-less). Each size also
- *         sets --slab so the primary CTA's edge scales with the control
- *         instead of looking muddy when small or thin when large.
+ *         sets the slab depths (--slab-x / --slab-y) so the base scales with
+ *         the control instead of looking muddy when small.
  * Shapes: default | pill | none — explicit so special cases (search bar,
  *         circular gallery controls) never have to fight the merge layer.
  */
@@ -33,12 +32,11 @@ const base =
 const variants = {
   primary:
     'bg-secondary text-secondary-700 shadow-slab hover:bg-secondary-100 ' +
-    // Press: collapse the slab — the control sits down into its edge.
-    'active:[--slab:0px] active:translate-y-[2px] ' +
-    // A secondary ring on a yellow face is invisible; use white. The offset is
-    // painted over the slab, so it borrows the slab's own cyan: the offset band
-    // merges into the edge instead of chopping it with a dark gap.
-    'focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-100',
+    // Press: zero both depths, so the base collapses and the button sits flat.
+    'active:[--slab-x:0px] active:[--slab-y:0px] active:translate-y-[1px] ' +
+    // A yellow ring on a yellow face is invisible; an outer ring would be
+    // drawn over the base. Inset stays visible and never fights the slab.
+    'focus-visible:ring-white focus-visible:ring-inset focus-visible:ring-offset-0',
   tonal: 'bg-primary-600 text-white hover:bg-primary-500 hover:shadow-e2',
   surface,
   outline: 'border border-white/15 text-primary-100 hover:border-white/25 hover:bg-white/5',
@@ -47,10 +45,10 @@ const variants = {
 }
 
 const sizes = {
-  sm:   'h-9 px-3 text-xs [--slab:4px]',
-  md:   'h-11 px-5 text-sm [--slab:5px]',
-  lg:   'h-13 px-7 text-sm [--slab:6px]',
-  icon: 'h-10 w-10 p-0 [--slab:4px]',
+  sm: 'h-9 px-3 text-xs [--slab-x:2px] [--slab-y:3px]',
+  md: 'h-11 px-5 text-sm [--slab-x:2px] [--slab-y:4px]',
+  lg: 'h-13 px-7 text-sm [--slab-x:3px] [--slab-y:5px]',
+  icon: 'h-10 w-10 p-0 [--slab-x:2px] [--slab-y:3px]',
 }
 
 const shapes = {

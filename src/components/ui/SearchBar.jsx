@@ -31,31 +31,28 @@ import { cn } from '../../lib/cn'
  * optionally keyed on the URL to resync).
  */
 
-/* The button carries a hard-shadow slab that paints BELOW its box — it adds
-   no layout height, but it adds visual height (--slab + 1px, so 3 / 4 / 5px).
-   A field sized to the button's *box* therefore reads as smaller than the
-   button. Each `field` below is the face height PLUS that ledge, and the row
-   is top-aligned (see the form's items-start) so the two bottom edges land on
-   the same line:
+/* The button's slab paints BELOW its box — it adds no layout height, but it
+   adds visual height (--slab-y: 3 / 4 / 5px). A field sized to the button's
+   *box* therefore reads as smaller than the button. Each `field` below is the
+   face height PLUS that depth, and the row is top-aligned (see the form's
+   items-start) so the two bottom edges land on the same line:
 
      sm: 36 + 3 = 39   md: 44 + 4 = 48   lg: 48 + 5 = 53
 
-   If --slab changes in index.css, these three numbers must follow. */
+   If --slab-y changes in Button.jsx, these three numbers must follow. */
 const sizes = {
   sm: {
-    // The bottom padding keeps the text centred on the button FACE (which is
-    // the ledge shorter) instead of on the taller box.
-    field: 'h-[39px] px-3 pb-[3px] text-sm',
+    field: 'h-[39px] px-3 text-sm',
     btn: 'h-9 w-9 p-0',
     labeled: 'h-9 px-3 text-xs',
   },
   md: {
-    field: 'h-12 px-4 pb-1 text-sm',
+    field: 'h-12 px-4 text-sm',
     btn: 'h-11 w-11 p-0',
     labeled: 'h-11 px-4 text-sm',
   },
   lg: {
-    field: 'h-[53px] px-4 pb-[5px] text-sm',
+    field: 'h-[53px] px-4 text-sm',
     btn: 'h-12 w-12 p-0',
     labeled: 'h-12 px-5 text-sm',
   },
@@ -120,8 +117,8 @@ function SearchBar({
       />
 
       {/* Same height as the field by construction, so the pair can never
-          drift out of alignment. The slab edge scales through Button's
-          size → --slab mapping. */}
+          drift out of alignment. The slab depth scales through Button's
+          size → --slab-y mapping. */}
       <Button
         type="submit"
         variant="primary"
