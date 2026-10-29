@@ -1,9 +1,10 @@
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import surface from './surfaces'
 
 /**
- * Select primitive — Radix for behaviour/a11y, monochrome surface for the UI.
+ * Select primitive — Radix for behaviour/a11y, card surface for the UI.
  *
  *   <Select
  *     aria-label="Trier par"
@@ -16,10 +17,14 @@ import { cn } from '../../lib/cn'
  * Radix gives: keyboard (↑/↓, Home/End, type-ahead, Esc, Tab), focus
  * management, portal rendering and ARIA wiring.
  *
- * Visual language: same recipe as the tonal Button — filled surface,
- * elevation instead of a border, monochrome white text.
- *   rest: bg-primary-600/40 + shadow-e2
- *   hover / focus / open: bg-primary-500/40 + shadow-e3
+ * Visual language: the shared `surface` recipe (see surfaces.js) — teal card
+ * face, discreet yellow wash in the corner, hairline ring, soft elevation.
+ * A select is a field, not a CTA, so it never gets the primary slab; the only
+ * saturated yellow here is the checked mark inside the panel.
+ *
+ * Text sits at full white: white on tertiary-400 is ≈ 4.4:1, so a /60 tint
+ * would fall well below AA. The placeholder keeps the tint (it is not
+ * essential content and the label above it carries the meaning).
  */
 
 const sizes = {
@@ -28,18 +33,15 @@ const sizes = {
 }
 
 const trigger =
-  'group inline-flex cursor-pointer items-center justify-between gap-2 whitespace-nowrap ' +
-  'rounded-control bg-primary-600/40 text-white/60 shadow-e2 ' +
-  'transition-all duration-200 ease-material ' +
-  'hover:bg-primary-500/40 hover:text-white hover:shadow-e3 ' +
-  'focus-visible:bg-primary-500/40 focus-visible:text-white focus-visible:shadow-e3 focus-visible:outline-none ' +
-  'data-[state=open]:bg-primary-500/40 data-[state=open]:text-white data-[state=open]:shadow-e3 ' +
-  'data-[placeholder]:text-white/40 ' +
+  surface +
+  ' group inline-flex cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-control ' +
+  'data-[state=open]:bg-tertiary-300 data-[state=open]:ring-white/25 data-[state=open]:shadow-e2 ' +
+  'data-[placeholder]:text-white/70 ' +
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
 
 const item =
   'flex cursor-pointer select-none items-center justify-between gap-2 ' +
-  'rounded-control px-3 py-2 text-sm text-white/60 outline-none ' +
+  'rounded-control px-3 py-2 text-sm text-white/75 outline-none ' +
   'data-[highlighted]:bg-white/10 data-[highlighted]:text-white ' +
   'data-[state=checked]:text-white ' +
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-40'
@@ -68,7 +70,7 @@ function Select({
         <SelectPrimitive.Icon asChild>
           <ChevronDown
             size={16}
-            className="shrink-0 text-white/50 transition-colors duration-200 group-hover:text-white group-data-[state=open]:text-white"
+            className="shrink-0 text-white/60 transition-colors duration-200 group-hover:text-white group-data-[state=open]:text-white"
           />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
@@ -79,7 +81,7 @@ function Select({
           sideOffset={6}
           className={cn(
             'z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden',
-            'rounded-card bg-primary-700/95 p-1 shadow-e4 ring-1 ring-white/10 backdrop-blur-xl',
+            'rounded-card bg-tertiary-600/95 p-1 shadow-e4 ring-1 ring-white/10 backdrop-blur-xl',
             'data-[state=open]:animate-[select-in_120ms_var(--ease-material)]',
             'motion-reduce:animate-none'
           )}
@@ -93,7 +95,7 @@ function Select({
               >
                 <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
                 <SelectPrimitive.ItemIndicator>
-                  <Check size={14} className="shrink-0 text-white" />
+                  <Check size={14} className="shrink-0 text-secondary" />
                 </SelectPrimitive.ItemIndicator>
               </SelectPrimitive.Item>
             ))}

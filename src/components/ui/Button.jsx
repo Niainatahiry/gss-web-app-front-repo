@@ -1,16 +1,23 @@
 import { cn } from '../../lib/cn'
+import surface from './surfaces'
 
 /**
  * Design-system button.
  *
  * Variants
- *  - primary  yellow CTA — one per view
+ *  - primary  yellow CTA — one per view. Hard-shadow "slab": the yellow face
+ *             sits on an opaque tertiary-100 edge closed by a 1px white
+ *             hairline (see --shadow-slab). It reads as a pressed physical
+ *             object rather than a floating card.
  *  - tonal    dark filled secondary action
- *  - outline  bordered, on dark surfaces
+ *  - surface  teal card material — same recipe as the Select trigger
+ *  - outline  bordered, on dark surfaces (still the go-to for true ghosts)
  *  - ghost    low-emphasis / nav
  *  - danger   destructive
  *
- * Sizes:  sm | md | lg | icon (icon = square, padding-less)
+ * Sizes:  sm | md | lg | icon (icon = square, padding-less). Each size also
+ *         sets --slab so the primary CTA's edge scales with the control
+ *         instead of looking muddy when small or thin when large.
  * Shapes: default | pill | none — explicit so special cases (search bar,
  *         circular gallery controls) never have to fight the merge layer.
  */
@@ -24,23 +31,26 @@ const base =
   'disabled:pointer-events-none disabled:opacity-50'
 
 const variants = {
-  primary: 'bg-secondary text-secondary-700 shadow-e2 hover:bg-secondary-100 hover:shadow-e3',
+  primary:
+    'bg-secondary text-secondary-700 shadow-slab hover:bg-secondary-100 ' +
+    // Press: collapse the slab — the control sits down into its edge.
+    'active:[--slab:0px] active:translate-y-[2px] ' +
+    // A secondary ring on a yellow face is invisible; use white. The offset is
+    // painted over the slab, so it borrows the slab's own cyan: the offset band
+    // merges into the edge instead of chopping it with a dark gap.
+    'focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-100',
   tonal: 'bg-primary-600 text-white hover:bg-primary-500 hover:shadow-e2',
-  surface:
-    'bg-primary-600/40 text-white/60 shadow-e2 ' +
-    'hover:bg-primary-500/40 hover:text-white hover:shadow-e3 ' +
-    'aria-expanded:bg-primary-500/40 aria-expanded:text-white aria-expanded:shadow-e3 ' +
-    'focus-visible:ring-white/20',
+  surface,
   outline: 'border border-white/15 text-primary-100 hover:border-white/25 hover:bg-white/5',
   ghost: 'text-primary-100 hover:bg-white/5 hover:text-white',
   danger: 'bg-red-600 text-white hover:bg-red-500 hover:shadow-e2',
 }
 
 const sizes = {
-  sm: 'h-9 px-3 text-xs',
-  md: 'h-11 px-5 text-sm',
-  lg: 'h-13 px-7 text-sm',
-  icon: 'h-10 w-10 p-0',
+  sm:   'h-9 px-3 text-xs [--slab:4px]',
+  md:   'h-11 px-5 text-sm [--slab:5px]',
+  lg:   'h-13 px-7 text-sm [--slab:6px]',
+  icon: 'h-10 w-10 p-0 [--slab:4px]',
 }
 
 const shapes = {

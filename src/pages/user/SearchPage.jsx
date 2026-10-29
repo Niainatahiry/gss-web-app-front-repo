@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { SearchX } from 'lucide-react'
 import ProductCard from '../../components/ui/ProductCard'
 import Button from '../../components/ui/Button'
-import SearchInput from '../../components/ui/SearchInput'
+import SearchBar from '../../components/ui/SearchBar'
 import SearchFilters from '../../components/search/SearchFilters'
 import SearchFiltersDrawer from '../../components/search/SearchFiltersDrawer'
 import SearchToolbar from '../../components/search/SearchToolbar'
@@ -207,9 +207,11 @@ function SearchPage() {
       </SearchFiltersDrawer>
 
       <div className="mb-4 lg:hidden">
-        <SearchInput
+        <SearchBar
           key={query}
           defaultValue={query}
+          size="md"
+          tone="surface"
           onSubmit={submitSearch}
         />
       </div>

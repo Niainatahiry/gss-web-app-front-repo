@@ -7,7 +7,7 @@ import { Search, Menu, X, User } from 'lucide-react'
 import BrowseDropdown from '../ui/BrowseDropdown'
 import Button from '../ui/Button'
 import IconButton from '../ui/IconButton'
-import SearchInput from '../ui/SearchInput'
+import SearchBar from '../ui/SearchBar'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { pauseHeroAutoplay, resumeHeroAutoplay } from '../../utils/heroAutoplay'
 import { cn } from '../../lib/cn'
@@ -122,64 +122,16 @@ function Header() {
     </div>
 
 {/* Search */}
-<form
-  onSubmit={handleSearch}
-  role="search"
-  className="group hidden lg:flex flex-1 justify-center px-12"
->
-  <div className="relative w-full max-w-xl flex items-center">
-
-    {/* Search input — off-white/cream background */}
-    <input
-      type="text"
-      value={searchQuery}
-      onChange={(event) => setSearchQuery(event.target.value)}
-      placeholder="Rechercher un jeu..."
-      aria-label="Rechercher un jeu"
-      className="
-        w-full
-        h-14
-        pl-5 pr-32
-        rounded-l-full
-        bg-[#f5f5f0]
-        border border-r-0 border-primary-100/10
-        text-primary-700
-        placeholder:text-primary-700/40
-        outline-none
-        transition-all
-        focus:bg-white
-        focus:border-primary-100/20
-      "
-    />
-
-    {/* Search button — bg-secondary on the right.
-        shadow-none: the component elevation smudges over the cream input.
-        The background gradient is the short cream → yellow blend at the seam,
-        scoped to this button and following the input's focus colour.
-        No focus ring on this button: it renders a near-black inset border on
-        the yellow surface. The plain ring-0 also cancels the component's
-        default ring + black offset band. */}
-    <Button
-      type="submit"
-      shape="none"
-      aria-label="Rechercher"
-      className="
-        h-14 px-6 shrink-0 rounded-r-full
-        shadow-none hover:shadow-none
-        bg-[linear-gradient(to_right,#f5f5f0,transparent_16px)]
-        group-has-[input:focus]:bg-[linear-gradient(to_right,#fff,transparent_16px)]
-        focus-visible:ring-0 focus-visible:ring-offset-0
-        active:scale-100
-      "
-    >
-      <Search
-        size={18}
-        strokeWidth={2}
-      />
-    </Button>
-
-  </div>
-</form>
+<div className="hidden lg:flex flex-1 justify-center px-12">
+  <SearchBar
+    size="lg"
+    tone="light"
+    value={searchQuery}
+    onChange={(event) => setSearchQuery(event.target.value)}
+    onSubmit={handleSearch}
+    className="w-full max-w-xl"
+  />
+</div>
 
 
     {/* Right side */}
@@ -287,8 +239,10 @@ function Header() {
         if (event.key === 'Escape') closeMobileSearch()
       }}
     >
-      <SearchInput
+      <SearchBar
         autoFocus
+        size="md"
+        tone="surface"
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.target.value)}
         onSubmit={handleSearch}

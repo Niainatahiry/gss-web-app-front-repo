@@ -51,6 +51,7 @@
   /* ── Radii — semantic, opt-in (does not override Tailwind's scale) ── */
   --radius-control: 10px;  /* buttons, inputs → rounded-control */
   --radius-card:    14px;  /* cards, panels   → rounded-card */
+  --radius-field:    8px;  /* search field + its submit button → rounded-field */
 
   /* ── Elevation — dark-theme aware: 1px inner top light + soft shadow ──
      On the dark teal background a bare shadow reads as a smudge; the inset
@@ -60,8 +61,37 @@
   --shadow-e3: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 6px 16px -4px rgb(0 0 0 / 0.50);
   --shadow-e4: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 12px 28px -8px rgb(0 0 0 / 0.55);
 
+  /* ── Hard-shadow "slab" — primary CTA only ──
+     Three stacked materials, no blur: yellow face → opaque tertiary-100 slab
+     → 1px white hairline. The thickness is driven by --slab so each Button
+     size can tune it (2px sm / 3px md / 4px lg) instead of shipping three
+     near-identical tokens. */
+  --shadow-slab:
+    0 var(--slab, 3px) 0 0 var(--color-tertiary-300),
+    0 calc(var(--slab, 3px) + 1px) 0 0 rgb(255 255 255 / 0.85);
+
   /* ── Motion ── */
   --ease-material: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ── Surface wash — the card material's light ──
+   TestimonialCard paints its "sun" with an absolutely-positioned blurred
+   circle clipped by the card. On a 36–44px control that would mean an extra
+   div and an overflow-hidden wrapper that would eat the ring, so the same
+   light is expressed as a background-image instead: the centre of the circle
+   sits *outside* the box (88% / -42%), so only a bloom of the top-right
+   corner enters. Max alpha stays low — it should read as light, not paint.
+
+   Kept as a background-image (not a bg-* utility) so tailwind-merge can
+   never override it, and so background-color can still transition underneath
+   on hover. */
+@utility surface-wash {
+  background-image: radial-gradient(
+    140% 180% at 88% -42%,
+    rgb(217 216 15 / 0.22) 0%,
+    rgb(217 216 15 / 0.07) 40%,
+    transparent 66%
+  );
 }
 
 /* ── BDO Grotesk ── */
@@ -259,6 +289,42 @@ html {
 html body[data-scroll-locked] {
   margin-right: 0 !important;
   padding-right: 0 !important;
+}
+
+/* ── Animated link underline ──
+   text-decoration can't be animated, so the underline is a pseudo-element
+   whose scaleX and the link colour share the same duration/easing: both
+   finish together instead of the underline snapping in on hover. */
+.link-underline {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  transition: color 200ms var(--ease-material);
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.18em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms var(--ease-material);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-underline,
+  .link-underline::after {
+    transition-duration: 0ms;
+  }
 }
 
 /* ── Login character — fondu du bas dans le fond de page ──

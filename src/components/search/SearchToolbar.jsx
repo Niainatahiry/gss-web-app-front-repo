@@ -19,16 +19,15 @@ function SearchToolbar({
         <div className="flex items-center gap-3">
           <Button
             variant="surface"
-            size="sm"
-            className="text-sm"
+            size="md"
             onClick={onToggleFilters}
             aria-expanded={filtersOpen}
             aria-controls="search-filters"
           >
-            <SlidersHorizontal size={15} />
+            <SlidersHorizontal size={18} />
             Filtres
             {activeFilters.length > 0 && (
-              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] font-bold text-white">
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-secondary px-1 text-[11px] font-bold text-secondary-700">
                 {activeFilters.length}
               </span>
             )}
@@ -47,7 +46,7 @@ function SearchToolbar({
             value={sort}
             onValueChange={onSortChange}
             options={SORT_OPTIONS}
-            size="sm"
+            size="md"
             className="min-w-48"
           />
         </div>
