@@ -8,7 +8,7 @@ function Recommendations() {
     <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-6">
   {/* Section Header */}
   <div className="mb-4 sm:mb-5 md:mb-6">
-    <h2 className="font-heading text-lg sm:text-xl md:text-5xl text-white/80">
+    <h2 className="font-heading text-3xl sm:text-xl md:text-5xl text-white/80">
       <a
         href="/recommendations"
         aria-label="Voir toutes les recommandations"
