@@ -25,9 +25,12 @@ function BestSellers() {
         </h2>
       </div>
 
-      {/* Scrollable on < xl — Grid of 5 on xl+ */}
+      {/* Scrollable on < xl — Grid of 5 on xl+.
+          Item widths are computed from the same column counts and gaps as the
+          search grid (2 / 3 / 4 / 5), so a card measures the same here and on
+          the results page instead of being a few pixels narrower. */}
       <div 
-        className="flex xl:grid xl:grid-cols-5 gap-4 overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0"
+        className="flex xl:grid xl:grid-cols-5 gap-3 sm:gap-4 overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style>{`
@@ -36,7 +39,10 @@ function BestSellers() {
           }
         `}</style>
         {bestSellersData.map((game) => (
-          <div key={game.id} className="shrink-0 w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] xl:w-auto">
+          <div
+            key={game.id}
+            className="shrink-0 w-[calc((100%-0.75rem)/2)] sm:w-[calc((100%-2rem)/3)] lg:w-[calc((100%-3rem)/4)] xl:w-auto"
+          >
             <ProductCard
               imageUrl={game.imageUrl}
               productName={game.productName}

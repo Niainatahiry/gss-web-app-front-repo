@@ -25,9 +25,10 @@ function Recommendations() {
     </h2>
   </div>
 
-  {/* Scrollable on < xl — Masonry on xl+ */}
+  {/* Scrollable on < xl — Masonry on xl+.
+      Same column math as BestSellers and the search grid below xl. */}
   <div 
-    className="flex xl:block overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0 xl:columns-6 gap-4"
+    className="flex xl:block overflow-x-auto xl:overflow-visible pb-2 xl:pb-0 -mx-4 px-4 xl:mx-0 xl:px-0 xl:columns-6 gap-3 sm:gap-4"
     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
   >
     <style>{`
@@ -36,7 +37,10 @@ function Recommendations() {
       }
     `}</style>
     {recommendationsData.map((game) => (
-      <div key={game.id} className="shrink-0 w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18%] xl:w-auto xl:break-inside-avoid xl:mb-4">
+      <div
+        key={game.id}
+        className="shrink-0 w-[calc((100%-0.75rem)/2)] sm:w-[calc((100%-2rem)/3)] lg:w-[calc((100%-3rem)/4)] xl:w-auto xl:break-inside-avoid xl:mb-4"
+      >
         <ProductCard
           imageUrl={game.imageUrl}
           productName={game.productName}
