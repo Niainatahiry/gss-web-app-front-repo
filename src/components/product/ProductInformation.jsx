@@ -127,8 +127,8 @@ function ProductInformation() {
           px-6
           py-3
           rounded-sm
-          bg-primary
-          text-white
+          bg-secondary
+          text-tertiary-500
           text-xl
           font-bold
         ">
@@ -173,11 +173,12 @@ function ProductInformation() {
         </Button>
 
 
-        {/* Add to cart */}
+        {/* Add to cart — the teal `surface` material, like the Filtres button
+            and the select trigger, so secondary actions share one treatment. */}
         <IconButton
-          variant="tonal"
+          variant="surface"
           aria-label="Ajouter au panier"
-          className="h-13 w-13 shrink-0 bg-primary-600/40 text-white/60 hover:bg-primary-500/40"
+          className="h-13 w-13 shrink-0"
         >
           <ShoppingCartPlus size={19} />
         </IconButton>
@@ -188,11 +189,7 @@ function ProductInformation() {
       {/* =========================
           WISHLIST
       ========================== */}
-      <Button
-        variant="tonal"
-        size="lg"
-        className="mt-3 w-full bg-primary-600/40 text-white/60 hover:bg-primary-500/40 hover:text-white"
-      >
+      <Button variant="surface" size="lg" className="mt-3 w-full">
         <Heart size={18} />
 
         Wishlist
