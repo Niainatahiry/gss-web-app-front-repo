@@ -1,9 +1,19 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import RegisterForm from '../../components/auth/RegisterForm'
+import SocialAuthButtons from '../../components/auth/SocialAuthButtons'
 import TextField from '../../components/ui/TextField'
 import { authQuotes } from '../../data/authQuotes'
 import { cn } from '../../lib/cn'
+import {
+  EMAIL_MAX_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  stripControlCharacters,
+  validateEmail,
+  validateLoginPassword,
+} from '../../utils/authValidation'
 import logoSrc from '../../assets/logos/gss-logo-with-white-text.png'
 import quoteMark from '../../assets/images/auth/quote-mark.png'
 
@@ -46,37 +56,6 @@ function pickAuthQuote() {
 
 const activeQuote = pickAuthQuote()
 
-function GoogleIcon() {
-  return (
-    <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0" aria-hidden="true">
-      <path
-        fill="#EA4335"
-        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-      />
-      <path
-        fill="#4285F4"
-        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-      />
-      <path
-        fill="#34A853"
-        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-      />
-    </svg>
-  )
-}
-
-function SteamIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-white" aria-hidden="true">
-      <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z" />
-    </svg>
-  )
-}
-
 /**
  * Page de connexion.
  * Route `/auth` : pas de header ni de footer du site, mais le logo reprend
@@ -84,11 +63,71 @@ function SteamIcon() {
  * de page légal.
  */
 function AuthPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const isRegister = searchParams.get('mode') === 'register'
+
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState({ email: '', password: '' })
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
+
+  const switchMode = (mode) => {
+    const next = new URLSearchParams(searchParams)
+
+    if (mode === 'register') {
+      next.set('mode', 'register')
+      // Don't carry a login password over to the register form.
+      setPassword('')
+      setShowPassword(false)
+      setErrors({ email: '', password: '' })
+    } else {
+      next.delete('mode')
+    }
+
+    setSearchParams(next, { replace: true })
+  }
+
+  const handleEmailChange = (event) => {
+    const next = stripControlCharacters(event.target.value)
+    setEmail(next)
+    if (errors.email) {
+      setErrors((current) => ({ ...current, email: validateEmail(next) }))
+    }
+  }
+
+  const handlePasswordChange = (event) => {
+    const next = stripControlCharacters(event.target.value)
+    setPassword(next)
+    if (errors.password) {
+      setErrors((current) => ({ ...current, password: validateLoginPassword(next) }))
+    }
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
+
+    const trimmedEmail = email.trim()
+    setEmail(trimmedEmail)
+
+    const nextErrors = {
+      email: validateEmail(trimmedEmail),
+      password: validateLoginPassword(password),
+    }
+    setErrors(nextErrors)
+
+    if (nextErrors.email) {
+      emailRef.current?.focus()
+      return
+    }
+    if (nextErrors.password) {
+      passwordRef.current?.focus()
+      return
+    }
+
+    // Validation passée — brancher ici l'appel à l'API d'authentification.
   }
 
   return (
@@ -130,36 +169,60 @@ function AuthPage() {
       {/* Contenu principal */}
       <main className="relative z-10 flex flex-1 items-center px-6 pb-12 pt-10 sm:px-10 xl:pl-[14.5vw] xl:pr-[11.4vw] xl:pb-[4.75rem] xl:pt-0">
         <div className="mx-auto flex w-full max-w-[1280px] flex-col items-center gap-14 xl:flex-row xl:items-center xl:justify-between xl:gap-10">
-          {/* Carte de connexion — première sur mobile */}
+          {/* Carte d'authentification — première sur mobile */}
           <section className="order-1 w-full max-w-[400px] xl:order-2 xl:shrink-0">
             <div className="xl:rounded-card xl:bg-tertiary-400 xl:px-8 xl:py-7 xl:shadow-e4">
               <h1 className="font-display text-4xl font-bold leading-tight text-white">
-                Se connecter
+                {isRegister ? 'Créer un compte' : 'Se connecter'}
               </h1>
               <p className="mt-1 text-sm text-white/85">
-                Connectez-vous à votre compte
+                {isRegister ? 'Rejoignez la communauté GSS' : 'Connectez-vous à votre compte'}
               </p>
 
-              <form onSubmit={handleSubmit} className="mt-9">
+              {isRegister ? (
+                <RegisterForm onSwitchToLogin={() => switchMode('login')} />
+              ) : (
+                <>
+                  <form onSubmit={handleSubmit} noValidate className="mt-9">
                 {/* Adresse mail */}
                 <TextField
                   id="auth-email"
+                  inputRef={emailRef}
                   label="Adresse mail"
                   name="email"
                   type="email"
                   autoComplete="email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
+                  maxLength={EMAIL_MAX_LENGTH}
                   required
+                  value={email}
+                  onChange={handleEmailChange}
+                  error={errors.email}
                   placeholder="adresse mail"
                 />
 
                 {/* Mot de passe */}
                 <TextField
                   id="auth-password"
+                  inputRef={passwordRef}
                   label="Mot de passe"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="go"
+                  minLength={PASSWORD_MIN_LENGTH}
+                  maxLength={PASSWORD_MAX_LENGTH}
                   required
+                  value={password}
+                  onChange={handlePasswordChange}
+                  error={errors.password}
                   placeholder="mot de passe"
                   className="mt-5"
                   trailing={
@@ -201,14 +264,14 @@ function AuthPage() {
                         </svg>
                       )}
                     </span>
-                    Remember me
+                    Se souvenir de moi
                   </label>
 
                   <a
                     href="#"
-                    className="text-sm text-white underline-offset-4 transition-colors hover:text-secondary hover:underline"
+                    className="link-underline text-sm text-white hover:text-secondary focus-visible:text-secondary"
                   >
-                    Forgot password?
+                    Mot de passe oublié ?
                   </a>
                 </div>
 
@@ -219,40 +282,21 @@ function AuthPage() {
                   Se connecter
                 </button>
 
-                {/* Séparateur */}
-                <div className="my-4 flex items-center gap-3 text-[11px] font-semibold tracking-[0.12em] text-white/80">
-                  <span className="h-px flex-1 bg-white/30" aria-hidden="true" />
-                  OU
-                  <span className="h-px flex-1 bg-white/30" aria-hidden="true" />
-                </div>
-
-                {/* Connexions externes */}
-                <button
-                  type="button"
-                  className="flex h-12 w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-white text-[15px] font-semibold text-tertiary-550 transition-colors duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-400"
-                >
-                  <GoogleIcon />
-                  Continuer avec Google
-                </button>
-
-                <button
-                  type="button"
-                  className="mt-4 flex h-12 w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-[#0E1D36] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#16294a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-tertiary-400"
-                >
-                  <SteamIcon />
-                  Continuer avec Steam
-                </button>
+                <SocialAuthButtons />
               </form>
 
               <p className="mt-6 text-center text-sm text-white">
                 Nouvel utilisateur ?{' '}
-                <a
-                  href="#"
-                  className="font-bold underline-offset-4 transition-colors hover:text-secondary hover:underline"
+                <button
+                  type="button"
+                  onClick={() => switchMode('register')}
+                  className="link-underline cursor-pointer border-0 bg-transparent p-0 font-bold hover:text-secondary focus-visible:text-secondary"
                 >
                   Créer un compte
-                </a>
+                </button>
               </p>
+                </>
+              )}
             </div>
           </section>
 
